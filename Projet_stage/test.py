@@ -5,7 +5,7 @@ import yaml
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from data_loader.loading import DataLoader  # <- votre fichier où la classe est définie
+from packages.modules.loading import DataLoader  # <- votre fichier où la classe est définie
 
 def test_csv(tmp_path):
     file = tmp_path / "data.csv"

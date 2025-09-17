@@ -5,6 +5,8 @@ import numpy as np
 import re
 
 class TextVisualizer:
+    """Visualisation des données textuelles.
+    """
     def __init__(self, text: str):
         if not isinstance(text, str):
             raise ValueError("Les données doivent être un texte (string).")

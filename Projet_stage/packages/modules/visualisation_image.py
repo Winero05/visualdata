@@ -78,7 +78,7 @@ class ImageVisualizer:
 
 # === Exemple d'utilisation ===
 if __name__ == "__main__":
-    path = "C:/Users/LENOVO/Pictures/Feedback/{4BFE8903-6DD0-4A5A-A8EF-E07D342F5A4A}/Capture001.png"  # Remplace par ton chemin
+    path = "Projet_stage/packages/data/img/Capture001.png"  # Remplacer par vôtre chemin
     visualizer = ImageVisualizer(path)
 
     visualizer.show_image()

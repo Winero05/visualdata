@@ -12,8 +12,7 @@ from typing import Union
 
 class DataLoader:
     """
-    Classe  pour charger, nettoyer, résumer et visualiser divers formats de données.
-    Supporte : CSV, Excel, JSON, YAML, Parquet, SQL, Image, Texte.
+    Chargement des données et les fichiers supportés sont : CSV, Excel, JSON, YAML, Parquet, SQL, Image, Texte.
     """
 
     def __init__(self):
@@ -23,10 +22,8 @@ class DataLoader:
     def load(self, file_path: str, file_type: str = None, sql_query: str = None, db_path: str = None,
              image_as_dataframe: bool = True) -> Union[pd.DataFrame, np.ndarray, str]:
         """
-        Classe pour charger, nettoyer, résumer et visualiser divers formats de données.
-        Cette version se concentre sur l'analyse exploratoire et la préparation sans transformer les données.
-        Supporte : CSV, Excel, JSON, YAML, Parquet, SQL, Image (vers DataFrame), Texte (vers string).
-            """
+        Chargement des données en fonction des fichiers chargés. Les extensions de fichier supportées sont : CSV, Excel, JSON, YAML, Parquet, SQL, Image (vers DataFrame), Texte (vers string).
+        """
         if not file_type:
             file_type = Path(file_path).suffix.lower().replace('.', '')
 
@@ -72,7 +69,7 @@ class DataLoader:
             else:
                 raise ValueError("Format de fichier non supporté ou paramètres manquants.")
 
-            print(f"✅ Fichier '{file_path}' chargé avec succès.")
+            print(f"\nFichier '{file_path}' chargé avec succès.")
             return self.df
         except FileNotFoundError:
             raise FileNotFoundError(f"Erreur : Le fichier à l'adresse '{file_path}' est introuvable.")

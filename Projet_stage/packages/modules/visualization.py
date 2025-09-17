@@ -21,7 +21,7 @@ def cluster_colors(df: pd.DataFrame, n_clusters: int = 5, show_plot: bool = True
 
     if show_plot:
         plt.figure(figsize=(10, 4))
-        plt.title("🎨 Couleurs dominantes (KMeans)", fontsize=14)
+        plt.title("Couleurs dominantes (KMeans)", fontsize=14)
         for i, color in enumerate(colors):
             plt.bar(i, 1, color=color/255, width=1, edgecolor='black')
         plt.xticks(range(n_clusters), [f"Cluster {i+1}" for i in range(n_clusters)])
@@ -41,7 +41,7 @@ def visualize_wordcloud(text: str, max_words: int = 100):
     plt.figure(figsize=(10, 6))
     plt.imshow(wc, interpolation='bilinear')
     plt.axis("off")
-    plt.title("📄 Nuage de mots", fontsize=16)
+    plt.title("Nuage de mots", fontsize=16)
     plt.show()
 
 def visualize_distributions(df: pd.DataFrame):
@@ -49,16 +49,16 @@ def visualize_distributions(df: pd.DataFrame):
     Génère des histogrammes et des boxplots pour les colonnes numériques.
     """
     if not isinstance(df, pd.DataFrame):
-        print("⚠️ La visualisation de la distribution n'est possible qu'avec un DataFrame.")
+        print("La visualisation de la distribution n'est possible qu'avec un DataFrame.")
         return
 
     numeric_cols = df.select_dtypes(include=np.number).columns
     if numeric_cols.empty:
-        print("⚠️ Aucune colonne numérique à visualiser.")
+        print("Aucune colonne numérique à visualiser.")
         return
 
     fig, axes = plt.subplots(nrows=len(numeric_cols), ncols=2, figsize=(12, 4 * len(numeric_cols)))
-    fig.suptitle('📈 Distribution des variables numériques', fontsize=16, y=1.02)
+    fig.suptitle('Distribution des variables numériques', fontsize=16, y=1.02)
     
     for i, col in enumerate(numeric_cols):
         sns.histplot(df[col], kde=True, ax=axes[i, 0])
@@ -74,16 +74,16 @@ def visualize_correlations(df: pd.DataFrame):
     Génère une heatmap de corrélation pour les colonnes numériques.
     """
     if not isinstance(df, pd.DataFrame):
-        print("⚠️ La visualisation des corrélations n'est possible qu'avec un DataFrame.")
+        print("La visualisation des corrélations n'est possible qu'avec un DataFrame.")
         return
 
     numeric_df = df.select_dtypes(include=np.number)
     if numeric_df.empty:
-        print("⚠️ Aucune colonne numérique pour calculer la corrélation.")
+        print("Aucune colonne numérique pour calculer la corrélation.")
         return
 
     correlation_matrix = numeric_df.corr()
     plt.figure(figsize=(10, 8))
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
-    plt.title("📊 Matrice de corrélation des variables numériques", fontsize=14)
+    plt.title("Matrice de corrélation des variables numériques", fontsize=14)
     plt.show()

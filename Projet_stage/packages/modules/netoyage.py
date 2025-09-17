@@ -1,4 +1,3 @@
-# data_loader/cleaning.py
 import pandas as pd
 import numpy as np
 
@@ -26,12 +25,12 @@ def handle_missing_values(df: pd.DataFrame, strategy: str = 'mean', column: str 
                 elif strategy == 'fill':
                     fill_value = 0
                 else:
-                    print("Stratégie d'imputation non valide.")
+                    print("Stratégie de changement non valide.")
                     return df
                 df_copy[col].fillna(fill_value, inplace=True)
-                print(f"Valeurs manquantes de la colonne '{col}' imputées avec la stratégie '{strategy}'.")
+                print(f"\nValeurs manquantes de la colonne '{col}' changée avec la stratégie '{strategy}'.\n")
         else:
-            print("\n\nAucune colonne numérique trouvée pour l'imputation.")
+            print("\nAucune colonne numérique trouvée pour le changement.\n")
 
     return df_copy
 

@@ -13,6 +13,12 @@ from typing import Union
 class DataLoader:
     """
     Chargement des données et les fichiers supportés sont : CSV, Excel, JSON, YAML, Parquet, SQL, Image, Texte.
+
+    Attributs:
+        Pas d'attribut.
+    
+    Méthodes:
+        Pas de valeur de retour
     """
 
     def __init__(self):

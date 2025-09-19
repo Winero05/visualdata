@@ -1,4 +1,6 @@
 env/
 .vscode/
 __pycache__
+.github/
 .gitignore
+note.md

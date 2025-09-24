@@ -1,5 +1,7 @@
 # main.py
 
+# NOTE: Ce fichier est un script de test local et n'est pas utilisé par l'API FastAPI.
+# L'API est lancée avec la commande `uvicorn api:app --reload`.
 # --- Section 1: Importations ---
 # Importez les classes et fonctions du paquet packages
 from packages.modules.loading import DataLoader
@@ -11,11 +13,11 @@ from packages.modules.visualisation_csv import TabularVisualizer
 
 
 def main():
-    """Chargement des données.
     """
-    # path = input("C:/Users/LENOVO/Downloads/Products.csv")
-    
-    path = input("C:/Users/User/Downloads/dataset_200_fixed.csv")
+    Fonction principale pour tester les modules en local, en dehors de l'API.
+    """
+    # Exemple de chemin, à adapter sur votre machine
+    path = "C:/Users/User/Downloads/dataset_200_fixed.csv"
 
     print(f"Vous avez saisi : {path}")
 

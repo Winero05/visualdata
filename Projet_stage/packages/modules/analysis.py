@@ -1,11 +1,21 @@
+from typing import Union
 import pandas as pd
 import numpy as np
-from typing import Union
-from sansEspace import SansEspace
 
 class Analyse:
-    def summarize(data: Union[pd.DataFrame, np.ndarray, str]) -> dict:
-        """Retourne un résumé statistique de la donnée chargée."""
+    """
+    Analyse des données chargées dans la classe `DataLoad` depuis le fichier `loading.py`.
+    """
+    def summarize(self, data: Union[pd.DataFrame, np.ndarray, str] = None) -> dict:
+        """
+        Retourne un résumé statistique de la donnée chargée.
+        
+        Args:
+            data (pd.DataFrame | np.ndarray | str) : Les données à résumer (valeur par défaut est `None`).
+            
+        Return:
+            dict: L'ensemble des informations résumé dans un dictionnaire.
+        """
  
         if data is None:
             raise ValueError("Aucune donnée chargée.")
@@ -36,6 +46,12 @@ class Analyse:
     def get_descriptive_stats(df: pd.DataFrame) -> pd.DataFrame:
         """
         Retourne des statistiques descriptives pour les colonnes numériques et catégorielles d'un DataFrame.
+        
+        Args:
+            df (pd.DataFrame) : Prend un DataFrame sur lequel l'on verra des informations statistiques.
+        
+        Return:
+            pd.DataFrame: Retourne un DataFrame montrant de façon distinct les données catégorielles et numérique.
         """
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Les données ne sont pas tabulaires (DataFrame).")
@@ -45,50 +61,3 @@ class Analyse:
         
         return pd.concat([numeric_stats, categorical_stats])
     
-    def donnees_numerique_unique(df: pd.DataFrame) -> pd.DataFrame:
-        """Cette fonction supprime les espaces dans les noms de la colonne du DataFrame, change les valeurs manquantent par une chaîne de caractère défini, converti les colonnes de type `Objet` en `category` et fait l'encodage de ces colonnes.
-        
-        Args:
-            df(pd.DataFrame) : Les données chargées par l'utilisateur.
-            
-        Return:
-            df_copy(pd.DataFrame) : Copie de la DataFrame chargé et modifié.
-            
-        """
-        
-        # Copie de la DataFrame reçu.
-        df_copy = df.copy()
-        
-        # Renommer les colonnes contenant des espaces.
-        df_copy.rename(SansEspace.sansEspace, axis = "columns", inplace = True)
-        
-        # Changer les valeurs manquantent par une chaîne de caractère `Aucune`
-        df_copy.fillna("Aucune", inplace=True)
-                
-        # Conversion des valeurs (données) des colonnes de type `Objet` en `category`.
-        df_copy['Gender'] = df_copy["Gender"].astype('category')
-        df_copy['Occupation'] = df_copy["Occupation"].astype('category')
-        df_copy['BMI_Category'] = df_copy["BMI_Category"].astype('category')
-                
-        # Encodage des valeurs catégorielles avec la méthode de N-1 Encoding dans de nouvelle colonne (On obtiendra des valeur de type `bool`).
-        df_copy_col_sexe = pd.get_dummies(df_copy["Gender"], drop_first=True)
-        df_copy_col_profession = pd.get_dummies(df_copy["Occupation"], drop_first=True)
-        df_copy_col_imc = pd.get_dummies(df_copy["BMI_Category"], drop_first=True)
-
-        ### Conversion des valeurs de type `bool` obtenu en valeur numériques.
-        df_copy_col_sexe = df_copy_col_sexe.astype(int)
-        df_copy_col_profession = df_copy_col_profession.astype(int)
-        df_copy_col_sexe = df_copy_col_sexe.astype(int)
-        df_copy_col_imc = df_copy_col_imc.astype(int)
-        
-        # Concatenation du DataFrame copié avec les nouvelle valeur encodées.
-        df_concat = pd.concat([df_copy, df_copy_col_sexe, df_copy_col_profession, df_copy_col_imc], axis="columns")
-        
-        print(df_concat.head())
-        
-        df_concat.rename(SansEspace.sansEspace, inplace = True)
-        
-        df_concat.to_csv("Projet_stage/packages/data/csv/Ensemble_de_données_sur_la_sante_du_sommeil_et_le_mode_de_vie/")
-    
-        return df_copy
-        

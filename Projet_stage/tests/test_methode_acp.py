@@ -1,15 +1,20 @@
-# Test de la class MethodePCA du module Projet_stage/packages/modules/methode_acp.py
+# Contenue de tests/test_methode_acp.py
 
+from packages.modules.methode_acp import MethodeACP
+import numpy as np
 import pandas as pd
-import plotly.express as px
-
-from packages.modules.methode_acp import MethodePCA
-
-chemin_de_donnees = "Projet_stage/packages/data/csv/Ensemble_de_données_sur_la_sante_du_sommeil_et_le_mode_de_vie/Sleep_health_and_lifestyle_dataset.csv"
-
-apc_2d_instance = MethodePCA(chemin_de_donnees=chemin_de_donnees)
-
-X_acp, df = apc_2d_instance.pca_reduction(nombre_dimenssion=2)
-
-print(df.head())
-print(X_acp.head())
+from tests.test_numeric_data import TestNumericData
+class TestMethodePCA:
+    def test_pca_reduction(self):
+        chargeur_num_data = TestNumericData()
+        
+        data = chargeur_num_data.send_numeric_data()
+        
+        # Instanciation de la classe `MethodePCA` du fichier `methode_acp.py`.
+        chargeur = MethodeACP(data)
+        
+        X_acp = chargeur.acp_reduction(nombre_dimenssion=3)
+        
+        assert X_acp is not None        
+        # assert not X_acp.empty
+    

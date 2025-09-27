@@ -8,7 +8,7 @@ from packages.modules.analysis import summarize
 from packages.modules.visualisation_image import ImageVisualizer
 from packages.modules.visualisation_texte import TextVisualizer
 from packages.modules.visualisation_csv import TabularVisualizer
-from packages.modules.visualisation_csv_2D
+from Projet_stage.packages.modules.visualisation_2D
 
 def main():
     """Chargement des données.

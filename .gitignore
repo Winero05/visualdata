@@ -1,6 +1,10 @@
-env/
-.vscode/
+venv
+build
 __pycache__
-.github/
-.gitignore
-note.md
+*.pyc
+source/
+Projet_stage/.env/
+notes_personnel/
+.coverage
+notes_personnel/note.md
+notes_personnel/docker_commandes.md

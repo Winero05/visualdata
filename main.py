@@ -1,8 +1,11 @@
 # main.py
 
-# NOTE: Ce fichier est un script de test local et n'est pas utilisé par l'API FastAPI.
-# L'API est lancée avec la commande `uvicorn api:app --reload`.
-# --- Section 1: Importations ---
+# =====================================================================================
+# NOTE IMPORTANTE :
+# Ce fichier est un script de test en ligne de commande pour un usage local uniquement.
+# Il N'EST PAS utilisé lorsque l'API FastAPI est en cours d'exécution.
+# L'API est lancée via le fichier `api.py` avec la commande: `uvicorn api:app --reload`
+# =====================================================================================
 # Importez les classes et fonctions du paquet packages
 from packages.modules.loading import DataLoader
 from packages.modules.netoyage import handle_missing_values, handle_duplicates

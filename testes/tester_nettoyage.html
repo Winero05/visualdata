@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API: Nettoyage de Données</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="file"], select, input[type="checkbox"] { margin-top: 5px; }
+        input[type="file"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        .checkbox-group { display: flex; align-items: center; margin-top: 10px; }
+        .checkbox-group label { margin: 0 0 0 10px; font-weight: normal; display: inline; }
+
+        button { background-color: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; font-size: 16px; }
+        button:hover { background-color: #c0392b; }
+        
+        #results { margin-top: 30px; padding: 15px; border: 1px dashed #e74c3c; border-radius: 4px; background-color: #fbecec; }
+        #message-api { font-weight: bold; }
+        #cleaned-data-output { max-height: 300px; overflow: auto; background-color: #fff; padding: 10px; border-radius: 4px; border: 1px solid #ddd; }
+
+        .alert { padding: 10px; border-radius: 4px; margin-top: 10px; }
+        .alert.error { background-color: #fdd; color: #c00; border-color: #c00; }
+        .alert.success { background-color: #dfd; color: #27ae60; border-color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧼 Testez le Nettoyage de Données</h1>
+        <h2>Endpoint: `/nettoyer-donnees/`</h2>
+
+        <div id="error-message" class="alert error" style="display: none;"></div>
+        <div id="success-message" class="alert success" style="display: none;"></div>
+
+        <form id="cleaning-form">
+            <label for="file">1. Fichier de Données (CSV/Excel)</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+            
+            <h3>2. Paramètres de Nettoyage (`CleaningParams`)</h3>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="supprimer_doublons">
+                <label for="supprimer_doublons">Supprimer les lignes dupliquées</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="supprimer_lignes_na">
+                <label for="supprimer_lignes_na">Supprimer les lignes avec valeurs manquantes (NA)</label>
+            </div>
+            
+            <label for="strategie_imputation">Stratégie d'Imputation des NA restants (Optionnel)</label>
+            <select id="strategie_imputation">
+                <option value="">(Ne pas imputer)</option>
+                <option value="mean">Moyenne ('mean')</option>
+                <option value="median">Médiane ('median')</option>
+                <option value="fill">Remplissage avec une valeur constante ('fill')</option>
+            </select>
+            
+            <label for="colonnes_imputation">Colonnes à Imputer (laissez vide pour appliquer aux colonnes numériques)</label>
+            <input type="text" id="colonnes_imputation" placeholder="Ex: 'Age, Salary' ou laissez vide">
+
+            <button type="submit">Nettoyer les Données</button>
+        </form>
+
+        <div id="results">
+            <h2>Résultats</h2>
+            <p id="message-api">En attente de l'exécution...</p>
+            <h3 id="data-title" style="display:none;">Données Nettoyées (10 premières lignes)</h3>
+            <pre id="cleaned-data-output"></pre>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/nettoyer-donnees/';
+
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            
+            const statusMessage = document.getElementById('message-api');
+            const cleanedDataOutput = document.getElementById('cleaned-data-output');
+            const dataTitle = document.getElementById('data-title');
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+
+            statusMessage.textContent = 'Envoi de la requête de nettoyage...';
+            cleanedDataOutput.textContent = '';
+            dataTitle.style.display = 'none';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (fileInput.files.length === 0) {
+                statusMessage.textContent = 'Veuillez sélectionner un fichier.';
+                return;
+            }
+
+            // 1. Construire l'objet JSON des paramètres de nettoyage
+            const cleanParams = {
+                supprimer_doublons: document.getElementById('supprimer_doublons').checked,
+                supprimer_lignes_na: document.getElementById('supprimer_lignes_na').checked,
+                strategie_imputation: document.getElementById('strategie_imputation').value || null,
+                colonnes_imputation: document.getElementById('colonnes_imputation').value 
+                    ? document.getElementById('colonnes_imputation').value.split(',').map(c => c.trim()) 
+                    : null
+            };
+
+            // Retirer les clés avec valeur nulle ou vide pour ne pas perturber Pydantic si elles sont Optionnelles
+            Object.keys(cleanParams).forEach(key => {
+                if (cleanParams[key] === null || cleanParams[key] === false || cleanParams[key].length === 0) {
+                    delete cleanParams[key];
+                }
+            });
+
+            // 2. Construire l'objet FormData
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            // L'API utilise Body(params: CleaningParams), qui est le modèle de requete pour cet endpoint.
+            // Cependant, la dépendance get_data_source prend la place du Body si on ne fournit pas de source JSON/Chemin
+            // Il faut donc envoyer les paramètres de nettoyage via le champ de formulaire 'params' ou 'params_json'.
+            // Vérification de la dépendance de l'endpoint:
+            // @app.post("/nettoyer-donnees/")
+            // def nettoyer_donnees(params: CleaningParams, df_data: pd.DataFrame = Depends(get_data_source))
+            
+            // Si vous n'avez pas adapté cet endpoint pour Form(..., params_json), nous devons simuler le Body
+            // en utilisant un champ de formulaire générique nommé 'params' que vous devez adapter dans votre code python.
+            
+            // ASSUMPTION IMPORTANTE: On suppose que vous utilisez la même structure multipart/Form pour les paramètres, 
+            // ce qui nécessite de modifier votre endpoint Python.
+            
+            // SI VOTRE ENDPOINT UTILISE Body(params: CleaningParams), IL FAUT LE MODIFIER COMME CECI:
+            /*
+            @app.post("/nettoyer-donnees/", ...)
+            def nettoyer_donnees(
+                params_json: str = Form(...), # Capture le JSON du formulaire
+                df_data: pd.DataFrame = Depends(get_data_source)
+            ) -> CleaningResponse:
+                params_dict = json.loads(params_json)
+                params = CleaningParams(**params_dict) # Validation Pydantic
+                # ... reste du code ...
+            */
+            // SI VOUS N'AVEZ PAS FAIT CE CHANGEMENT, LA REQUÊTE ÉCHOUERA.
+
+            // On utilise 'params_json' pour rester cohérent avec l'endpoint /reduire-dimension/
+            formData.append('params_json', JSON.stringify(cleanParams)); 
+
+
+            // 3. Envoyer la requête
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Succès
+                    statusMessage.textContent = data.message;
+                    successDiv.textContent = `Nettoyage réussi ! ${data.cleaned_data.length} lignes restantes.`;
+                    successDiv.style.display = 'block';
+                    
+                    // Affichage des données (10 premières lignes)
+                    const limitedData = data.cleaned_data.slice(0, 10);
+                    cleanedDataOutput.textContent = JSON.stringify(limitedData, null, 2);
+                    dataTitle.style.display = 'block';
+
+                } else {
+                    // Erreur API (4xx ou 5xx)
+                    statusMessage.textContent = `Échec de la requête (Code ${response.status}): ${data.detail || 'Erreur inconnue'}`;
+                    errorDiv.textContent = data.detail ? (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)) : 'Erreur inconnue de l\'API.';
+                    errorDiv.style.display = 'block';
+                }
+
+            } catch (error) {
+                // Erreur réseau ou JavaScript
+                statusMessage.textContent = `Erreur réseau: Impossible de connecter à l'API.`;
+                errorDiv.textContent = `Erreur de connexion: Assurez-vous que l'API est lancée sur ${API_URL}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('cleaning-form').addEventListener('submit', submitForm);
+        });
+    </script>
+</body>
+</html>

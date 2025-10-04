@@ -7,7 +7,7 @@ from fastapi import Body, FastAPI, HTTPException, Response, File, UploadFile, Fo
 
 from fastapi.responses import FileResponse
 #from matplotlib.pylab import Literal
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 from typing import Optional, List, Dict, Any, Union
 import io
 import pandas as pd
@@ -32,7 +32,7 @@ from packages.modules.methode_tsne import TSNEVisualizer
 from packages.modules.methode_umap import UMAPVisualizer
 
 from fastapi.responses import HTMLResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 # --- Modèles de Données Pydantic ---
 # Ces modèles définissent la structure des données attendues en entrée (requêtes)
 # et des données renvoyées en sortie (réponses). Ils sont cruciaux pour la validation
@@ -293,6 +293,18 @@ app = FastAPI(
     title="API de Visualisation et d'Analyse de Données",
     description="Une API pour charger, analyser et visualiser différents types de données. La plupart des endpoints acceptent une source de données via un chemin de fichier, une chaîne JSON ou un téléversement.",
     version="1.0.0"
+    
+)
+origins = [
+    "*", # Attention: utiliser "*" est sûr uniquement pour le développement local!
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -401,23 +413,44 @@ def bienvenue():
     """Endpoint de bienvenue simple pour vérifier que l'API est en ligne."""
     return {"Bienvenue sur l'API d'Analyse et de Visualisation de Données. Accédez à /docs pour la documentation interactive."}
 
+# Assurez-vous d'importer la constante DEFAULT_CLEANING_JSON et toutes les classes nécessaires.
+CLEANING_DEFAULTS = {
+    "supprimer_doublons": True,
+    "supprimer_lignes_na": False,
+}
+
+# Génère une chaîne JSON compacte (sans espace ni saut de ligne)
+DEFAULT_CLEANING_JSON = json.dumps(CLEANING_DEFAULTS, separators=(',', ':')) 
+# Résultat : '{"supprimer_doublons":true,"supprimer_lignes_na":false}'
 
 @app.post("/nettoyer-donnees/", summary="Nettoie un jeu de données", tags=["Nettoyage"], response_model=CleaningResponse)
 def nettoyer_donnees(
-    params: CleaningParams,
-    df_data: pd.DataFrame = Depends(get_data_source)
+    # Utilise la constante compacte pour un affichage aligné dans Swagger UI
+    params_json: str = Form(
+        DEFAULT_CLEANING_JSON, 
+        description="Paramètres de nettoyage au format JSON. Par défaut : {'supprimer_doublons':true,'supprimer_lignes_na':false}"
+    ),
+    df_data: pd.DataFrame = Depends(get_data_source) 
 ) -> CleaningResponse:
-    """
-    Applique différentes étapes de nettoyage à un jeu de données.
-    - Supprime les lignes dupliquées.
-    - Supprime les lignes avec des valeurs manquantes.
-    - Impute les valeurs manquantes restantes.
-    """
-    initial_rows = len(df_data)
+    
+    # 1. Désérialisation et Validation
+    try:
+        params_dict = json.loads(params_json)
+        params = CleaningParams(**params_dict)
+        
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail=f"Erreur de décodage JSON pour les paramètres de nettoyage: {str(e)}")
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Erreur de validation des paramètres de nettoyage: {e.errors()}")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erreur lors de l'instanciation des paramètres de nettoyage: {str(e)}")
+
+
+    # --- 2. Exécution du Nettoyage (Logique inchangée) ---
+
     df_nettoye = df_data.copy()
     messages = []
-
-    # Appliquer les suppressions en premier
+    
     if params.supprimer_doublons:
         rows_before = len(df_nettoye)
         df_nettoye.drop_duplicates(inplace=True)
@@ -430,13 +463,18 @@ def nettoyer_donnees(
         rows_after = len(df_nettoye)
         messages.append(f"{rows_before - rows_after} lignes avec NA supprimées.")
 
-    # Appliquer l'imputation ensuite, si une stratégie est définie
     if params.strategie_imputation:
         df_nettoye = handle_missing_values(df_nettoye, params.strategie_imputation, params.colonnes_imputation)
         messages.append(f"Imputation appliquée avec la stratégie '{params.strategie_imputation}'.")
 
     final_message = "Nettoyage terminé. " + " ".join(messages) if messages else "Aucune opération de nettoyage effectuée."
-    return CleaningResponse(message=final_message, cleaned_data=df_nettoye.to_dict(orient="records"))
+    
+    # --- 3. Retour de la Réponse ---
+    
+    return CleaningResponse(
+        message=final_message, 
+        cleaned_data=df_nettoye.to_dict(orient="records")
+    )
 
 
 @app.post("/visualiser/tabulaire/", summary="Visualisation de données tabulaires", tags=["Visualisation"])

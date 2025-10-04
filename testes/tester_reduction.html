@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API: Réduction de Dimension</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="file"], select, input[type="number"], textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #3498db; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; font-size: 16px; }
+        button:hover { background-color: #2980b9; }
+        #results { margin-top: 30px; padding: 15px; border: 1px dashed #27ae60; border-radius: 4px; background-color: #ecf0f1; }
+        #plot-image { max-width: 100%; height: auto; border: 1px solid #ddd; margin-top: 15px; display: none; }
+        .alert { padding: 10px; border-radius: 4px; margin-top: 10px; }
+        .alert.error { background-color: #fdd; color: #c00; border-color: #c00; }
+        .alert.success { background-color: #dfd; color: #27ae60; border-color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Testez votre Endpoint de Réduction de Dimension</h1>
+
+        <div id="error-message" class="alert error" style="display: none;"></div>
+        <div id="success-message" class="alert success" style="display: none;"></div>
+
+        <form id="reduction-form">
+            <label for="file">1. Fichier de Données (CSV/Excel)</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+            
+            <label for="methode">2. Méthode de Réduction</label>
+            <select id="methode" onchange="updateParameters()">
+                <option value="acp">ACP (Analyse en Composantes Principales)</option>
+                <option value="umap">UMAP</option>
+                <option value="tsne">t-SNE</option>
+            </select>
+
+            <div id="param-inputs">
+                </div>
+
+            <button type="submit">Exécuter la Réduction</button>
+        </form>
+
+        <div id="results">
+            <h2>Résultats</h2>
+            <p id="message-api">En attente de l'exécution...</p>
+            <img id="plot-image" alt="Graphique de Réduction de Dimension">
+            <h3 id="data-title" style="display:none;">Données Réduites (10 premières lignes)</h3>
+            <pre id="reduced-data-output"></pre>
+        </div>
+
+    </div>
+
+    <script>
+        // L'URL de votre API (changez le port si nécessaire)
+        const API_URL = 'http://127.0.0.1:8000/reduire-dimension/';
+
+        // Les paramètres Pydantic définis dans votre API.
+        const PARAMETER_CONFIG = {
+            acp: [
+                { id: 'n_components', type: 'number', label: 'Composantes (2 ou 3)', default: 2, min: 2, max: 3 },
+                { id: 'color_by_col', type: 'text', label: 'Colonne de coloration (Nom)', default: 'target' }
+            ],
+            umap: [
+                { id: 'n_components', type: 'number', label: 'Composantes (2 ou 3)', default: 2, min: 2, max: 3 },
+                { id: 'color_by_col', type: 'text', label: 'Colonne de coloration (Nom)', default: 'target' },
+                { id: 'n_neighbors', type: 'number', label: 'Voisins (n_neighbors)', default: 15, min: 2 },
+                { id: 'min_dist', type: 'number', label: 'Distance Min. (min_dist)', default: 0.1, step: 0.01, min: 0.0 }
+            ],
+            tsne: [
+                { id: 'n_components', type: 'number', label: 'Composantes (2 ou 3)', default: 2, min: 2, max: 3 },
+                { id: 'color_by_col', type: 'text', label: 'Colonne de coloration (Nom)', default: 'target' },
+                { id: 'perplexity', type: 'number', label: 'Perplexité', default: 30, min: 1 }
+            ]
+        };
+
+        // Fonction pour mettre à jour les champs du formulaire
+        function updateParameters() {
+            const methode = document.getElementById('methode').value;
+            const paramContainer = document.getElementById('param-inputs');
+            paramContainer.innerHTML = '';
+
+            PARAMETER_CONFIG[methode].forEach(p => {
+                const label = document.createElement('label');
+                label.htmlFor = p.id;
+                label.textContent = `Paramètre ${p.label}:`;
+                paramContainer.appendChild(label);
+
+                const input = document.createElement('input');
+                input.type = p.type;
+                input.id = p.id;
+                input.name = p.id;
+                input.value = p.default;
+                if (p.min !== undefined) input.min = p.min;
+                if (p.max !== undefined) input.max = p.max;
+                if (p.step !== undefined) input.step = p.step;
+                
+                paramContainer.appendChild(input);
+            });
+        }
+
+        // Fonction d'envoi de la requête
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            const methode = document.getElementById('methode').value;
+            const statusMessage = document.getElementById('message-api');
+            const plotImage = document.getElementById('plot-image');
+            const reducedDataOutput = document.getElementById('reduced-data-output');
+            const dataTitle = document.getElementById('data-title');
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+
+            statusMessage.textContent = 'Envoi de la requête... Veuillez patienter.';
+            plotImage.style.display = 'none';
+            reducedDataOutput.textContent = '';
+            dataTitle.style.display = 'none';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (fileInput.files.length === 0) {
+                statusMessage.textContent = 'Veuillez sélectionner un fichier.';
+                return;
+            }
+
+            // 1. Récupérer les paramètres et construire l'objet JSON des paramètres
+            const params = {};
+            PARAMETER_CONFIG[methode].forEach(p => {
+                let value = document.getElementById(p.id).value;
+                if (p.type === 'number') {
+                    value = (p.step && p.step.toString().includes('.')) ? parseFloat(value) : parseInt(value);
+                }
+                params[p.id] = value;
+            });
+            params.methode = methode;
+
+            // 2. Construire l'objet FormData (pour l'upload multipart)
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            // Le JSON des paramètres doit être une chaîne pour le Form() de FastAPI
+            formData.append('params_json', JSON.stringify(params)); 
+
+            // 3. Envoyer la requête
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData // Pas de Content-Type car FormData le gère
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Succès
+                    statusMessage.textContent = data.message;
+                    successDiv.textContent = `Succès ! Données réduites : ${data.reduced_data.length} points.`;
+                    successDiv.style.display = 'block';
+                    
+                    // Affichage de l'image
+                    plotImage.src = `data:image/png;base64,${data.image_data}`;
+                    plotImage.style.display = 'block';
+
+                    // Affichage des données (10 premières lignes)
+                    const limitedData = data.reduced_data.slice(0, 10);
+                    reducedDataOutput.textContent = JSON.stringify(limitedData, null, 2);
+                    dataTitle.style.display = 'block';
+
+                } else {
+                    // Erreur API (4xx ou 5xx)
+                    statusMessage.textContent = `Échec de la requête (Code ${response.status}): ${data.detail || 'Erreur inconnue'}`;
+                    errorDiv.textContent = data.detail ? (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)) : 'Erreur inconnue de l\'API.';
+                    errorDiv.style.display = 'block';
+                }
+
+            } catch (error) {
+                // Erreur réseau ou JavaScript
+                statusMessage.textContent = `Erreur réseau: Impossible de connecter à l'API.`;
+                errorDiv.textContent = `Erreur de connexion: Assurez-vous que l'API est lancée sur ${API_URL}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Initialisation du formulaire
+        document.addEventListener('DOMContentLoaded', () => {
+            updateParameters(); // Charge les paramètres ACP par défaut au démarrage
+            document.getElementById('reduction-form').addEventListener('submit', submitForm);
+        });
+    </script>
+</body>
+</html>

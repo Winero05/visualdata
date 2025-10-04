@@ -45,19 +45,57 @@ class Analyse:
         
         return pd.concat([numeric_stats, categorical_stats])
 
+
+
 def preprocess_for_reduction(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Prépare un DataFrame pour la réduction de dimension en encodant les
-    colonnes catégorielles et en remplissant les valeurs manquantes.
+    Prépare automatiquement un DataFrame pour la réduction de dimension :
+    - Convertit les colonnes numériques mal typées
+    - Encode les colonnes catégorielles (One-Hot)
+    - Gère les valeurs manquantes
+    - Élimine les colonnes vides et dupliquées
     """
+    
     df_processed = df.copy()
-    
-    # Gérer les valeurs manquantes dans les colonnes numériques
-    numeric_cols = df_processed.select_dtypes(include=np.number).columns
-    df_processed[numeric_cols] = df_processed[numeric_cols].fillna(df_processed[numeric_cols].median())
 
-    # Encodage One-Hot des variables catégorielles
+    # 🔹 Étape 1 : Détection et conversion automatique des colonnes numériques
+    for col in df_processed.columns:
+        # Si plus de 70% des valeurs peuvent être converties en nombre, on la force en numérique
+        try:
+            numeric_version = pd.to_numeric(df_processed[col], errors="coerce")
+            ratio_numeric = numeric_version.notna().mean()
+            if ratio_numeric > 0.7:
+                df_processed[col] = numeric_version
+        except Exception:
+            pass
+
+    # 🔹 Étape 2 : Gérer les valeurs manquantes dans les colonnes numériques
+    numeric_cols = df_processed.select_dtypes(include=[np.number]).columns
+    for col in numeric_cols:
+        median_value = df_processed[col].median()
+        df_processed[col] = df_processed[col].fillna(median_value)
+
+    # 🔹 Étape 3 : Supprimer les colonnes vides ou constantes
+    df_processed = df_processed.loc[:, df_processed.nunique() > 1]
+
+    # 🔹 Étape 4 : Encodage des colonnes catégorielles (texte)
     categorical_cols = df_processed.select_dtypes(include=['object', 'category']).columns
-    df_processed = pd.get_dummies(df_processed, columns=categorical_cols, dummy_na=True)
-    
+    if len(categorical_cols) > 0:
+        df_processed = pd.get_dummies(df_processed, columns=categorical_cols, dummy_na=True)
+
+    # 🔹 Étape 5 : Remplacer les valeurs infinies et remplir les NaN restants
+    df_processed = df_processed.replace([np.inf, -np.inf], np.nan).fillna(0)
+
+    # 🔹 Étape 6 : Éviter les doublons de colonnes
+    df_processed = df_processed.loc[:, ~df_processed.columns.duplicated()]
+
+    # 🔹 Étape 7 : Vérification finale
+    if df_processed.select_dtypes(include=[np.number]).empty:
+        raise ValueError("Aucune donnée numérique exploitable pour la réduction de dimension après le prétraitement.")
+
     return df_processed
+
+
+
+    
+

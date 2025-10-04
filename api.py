@@ -4,6 +4,8 @@
 from enum import Enum
 from typing_extensions import Literal
 from fastapi import Body, FastAPI, HTTPException, Response, File, UploadFile, Form, Depends
+
+from fastapi.responses import FileResponse
 #from matplotlib.pylab import Literal
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any, Union
@@ -11,6 +13,7 @@ import io
 import pandas as pd
 import json
 import base64
+import markdown
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -127,16 +130,12 @@ class AnalysisPipelineRequest(BaseModel):
     source_donnees: DataSource
     parametres_reduction: ReductionParams = Field(..., discriminator="methode")
     parametres_nettoyage: Optional[CleaningParams] = None
-
 class CleaningResponse(BaseModel):
     """Réponse de l'endpoint de nettoyage."""
     status: str = "success"
     message: str
     cleaned_data: List[Dict[str, Any]]
-
-
 # --- Fonctions Utilitaires & Dépendances FastAPI ---
-
 def fig_to_base64(fig) -> str:
     """
     Convertit une figure Matplotlib ou Plotly en une chaîne de caractères Base64.
@@ -261,8 +260,6 @@ def get_dataframe_from_source_model(source: 'DataSource') -> pd.DataFrame:
 
     raise HTTPException(status_code=400, detail="Aucune source de données valide n'a été fournie.")
 
-
-
 def execute_reduction(params: ReductionParams, df_data: pd.DataFrame) -> tuple[Any, pd.DataFrame]:
     """
     Fonction d'aide qui exécute la logique de réduction de dimension et retourne la figure et le dataframe réduit.
@@ -299,6 +296,56 @@ app = FastAPI(
 )
 
 
+async def favicon():
+    return FileResponse("favicon.ico")
+
+@app.get("/api-documentation", response_class=HTMLResponse, tags=["Documentation"], summary="Documentation complète du projet")
+def get_api_documentation():
+    """
+    Affiche la documentation complète de l'API (html).
+    """
+    try:
+        with open("doc_api.md", "r", encoding="utf-8") as f:
+            md_content = f.read()
+        
+        # Convertir le Markdown en HTML
+        html_content = markdown.markdown(md_content, extensions=['fenced_code', 'tables'])
+        
+        # Ajouter un style CSS pour une meilleure lisibilité
+        styled_html = f"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Documentation de l'API</title>
+                <link rel="icon" href="/favicon.ico" type="image/x-icon">
+                <style>
+                    body {{ 
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                        line-height: 1.6;
+                        padding: 20px 40px;
+                        max-width: 900px;
+                        margin: 20px auto;
+                        color: #333;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                    }}
+                    h1, h2, h3 {{ border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }}
+                    code {{ background-color: #f6f8fa; padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }}
+                    pre {{ background-color: #f6f8fa; padding: 16px; overflow: auto; border-radius: 3px; }}
+                    table {{ border-collapse: collapse; width: 100%; margin: 1em 0; }}
+                    th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                    th {{ background-color: #f2f2f2; }}
+                </style>
+            </head>
+            <body>
+                {html_content}
+            </body>
+        </html>
+        """
+        return HTMLResponse(content=styled_html)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Le fichier de documentation 'doc_api.md' n'a pas été trouvé.")
 
 # --- Endpoints ---
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -306,7 +353,7 @@ def home():
     return """
     <html>
         <head>
-            <title>Accueil API</title>
+            <title>VISUALDATA API</title>
             <style>
                 body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f9f9f9; }
                 h1 { color: #2c3e50; }
@@ -326,12 +373,15 @@ def home():
                 .redoc { background-color: #27ae60; }
                 .redoc:hover { background-color: #1e8449; }
             </style>
+            <link rel="icon" href="/favicon.ico" type="image/x-icon">
         </head>
         <body>
-            <h1>🚀 Bienvenue sur mon API</h1>
+            <h1>🚀 Bienvenue sur l API de VisualData</h1>
             <p>Cette API permet la réduction et la visualisation de données.</p>
-            <h2>📌 Endpoints disponibles :</h2>
+        
+            <h2>📌 Endpoints principaux :</h2>
             <ul>
+                <li><code>/analyser-et-visualiser/</code> – Pipeline complet d'analyse</li>
                 <li><code>/reduire-dimension/</code> – Réduction de dimension</li>
                 <li><code>/visualiser/image</code> – Visualisation d'une image</li>
                 <li><code>/visualiser/text</code> – Visualisation de texte</li>
@@ -339,9 +389,9 @@ def home():
             <p>Sélectionne une documentation interactive 💡⚡ :</p>
             <a href="/docs" class="btn swagger">📘 Swagger UI</a>
             <a href="/redoc" class="btn redoc">📗 ReDoc</a>
+            <a href="/api-documentation" class="btn redoc" style="background-color: #f39c12;">📙 Documentation et utilisation de l API</a>
 
-            <p class="footer">Développé avec FastAPI 💡</p>
-        </body>
+            </body>
     </html>
     """
 

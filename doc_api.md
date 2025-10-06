@@ -12,11 +12,11 @@ L'objectif de cette API est de fournir une plateforme **stateless** et accessibl
 - **Rapidité** : Obtenez rapidement des insights visuels sur un jeu de données sans configurer un environnement local complet.
 - **Intégration** : Peut servir de backend pour des applications de tableaux de bord interactifs.
 
-## 2. Architecture et Technologies
+## 2. Outils utilisés 
 
 L'API est construite sur un écosystème Python moderne et robuste.
 
-| Catégorie | Technologie | Rôle |
+| categorie   | outils  | Rôle |
 |---|---|---|
 | **Framework Web** | `FastAPI` | Construction d'API haute performance, validation de données, documentation automatique. |
 | **Serveur ASGI** | `Uvicorn` | Exécution de l'application FastAPI. |
@@ -64,14 +64,14 @@ pip install -r requirements.txt
 Ouvrez un terminal à la racine du projet (où se trouve `api.py`) et exécutez la commande :
 
 ```bash
-python -m uvicorn api:app --reload
+uvicorn api:app --reload 
 ```
 
 - `api`: Fait référence au fichier `api.py`.
 - `app`: Fait référence à l'objet `FastAPI` créé dans le fichier (`app = FastAPI(...)`).
 - `--reload`: Redémarre le serveur automatiquement après chaque modification du code (idéal pour le développement).
 
-L'API sera alors accessible à l'adresse http://127.0.0.1:8000.
+L'API sera alors accessible à l'adresse < http://127.0.0.1:8000.>
 
 ## 4. Utilisation de l'API
 
@@ -79,12 +79,19 @@ La meilleure façon d'explorer et de tester l'API est d'utiliser la documentatio
 
 - **Swagger UI** : http://127.0.0.1:8000/docs
 - **ReDoc** : http://127.0.0.1:8000/redoc
+- **Interfaces de test locales** :
+  - [Testeur de Réduction](file:///c:/Users/User/Desktop/development/API_code/Projet/testes/tester_reduction.html)
+  - [Testeur de Nettoyage](file:///c:/Users/User/Desktop/development/API_code/Projet/testes/tester_nettoyage.html)
+  - [Testeur de Nuage de Mots](file:///c:/Users/User/Desktop/development/API_code/Projet/testes/tester_nuage_de_mots.html)
+  - [Testeur de Visualisation](file:///c:/Users/User/Desktop/development/API_code/Projet/testes/tester_visualisation.html)
 
-### 4.1. Le Modèle de Requête Unifié
+### 4.1. Les Modèles de Requête
 
-Pour garantir la cohérence et la simplicité, tous les endpoints principaux sont conçus pour accepter un **unique corps de requête JSON**. Ce corps contient à la fois la source des données et les paramètres de l'opération.
+L'API utilise deux modèles de requête principaux, adaptés à différents cas d'usage.
 
-#### Le modèle `DataSource`
+#### Modèle 1 : Requête JSON unique (pour le pipeline complet)
+
+L'endpoint `/analyser-et-visualiser/` utilise un **unique corps de requête JSON**. Ce modèle est puissant pour les interactions de service à service, où les données peuvent être envoyées directement en JSON ou encodées en Base64.
 
 La source des données est spécifiée via un objet `DataSource`, qui peut prendre l'une des formes suivantes :
 
@@ -97,12 +104,21 @@ La source des données est spécifiée via un objet `DataSource`, qui peut prend
 
 > **Note** : Une seule de ces sources doit être fournie par requête.
 
+#### Modèle 2 : Requête `multipart/form-data` (pour les endpoints interactifs)
+
+La plupart des autres endpoints (`/reduire-dimension`, `/nettoyer-donnees`, `/visualiser/...`) sont conçus pour des clients interactifs (comme une page web). Ils utilisent le format `multipart/form-data`, qui permet d'envoyer un **fichier** et des **paramètres** dans la même requête.
+
+- **Source de données** : Un champ de formulaire de type `file` pour téléverser un fichier (CSV, Excel, image, etc.).
+- **Paramètres** : Des champs de formulaire textuels. Pour les paramètres complexes (comme ceux de la réduction de dimension), ils sont envoyés sous forme de chaîne JSON dans un champ unique (ex: `params_json`).
+
+Ce modèle est celui utilisé par les interfaces de test HTML fournies.
+
 ### 4.2. Détail des Endpoints
 
 Voici un aperçu des endpoints les plus importants.
 
 #### Pipeline Complet
-- **Endpoint** : `POST /analyser-et-visualiser/`
+- **Endpoint** : `POST /analyser-et-visualiser/` (Modèle JSON unique)
 - **Description** : Exécute un pipeline complet : chargement, nettoyage (optionnel) et réduction de dimension. C'est l'endpoint le plus puissant et recommandé.
 - **Exemple de requête** (`application/json`) :
   ```json

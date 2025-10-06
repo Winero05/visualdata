@@ -408,10 +408,6 @@ def home():
     """
 
 
-@app.get("/Accueil")
-def bienvenue():
-    """Endpoint de bienvenue simple pour vérifier que l'API est en ligne."""
-    return {"Bienvenue sur l'API d'Analyse et de Visualisation de Données. Accédez à /docs pour la documentation interactive."}
 
 # Assurez-vous d'importer la constante DEFAULT_CLEANING_JSON et toutes les classes nécessaires.
 CLEANING_DEFAULTS = {

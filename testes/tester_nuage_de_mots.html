@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API: Visualisation Nuage de Mots</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #9b59b6; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="file"], input[type="text"], input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #9b59b6; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; font-size: 16px; }
+        button:hover { background-color: #8e44ad; }
+        #results { margin-top: 30px; padding: 15px; border: 1px dashed #9b59b6; border-radius: 4px; background-color: #f7eefb; text-align: center; }
+        #plot-image { max-width: 100%; height: auto; border: 1px solid #ddd; margin-top: 15px; display: none; }
+        .alert { padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold; }
+        .alert.error { background-color: #fdd; color: #c00; border-color: #c00; }
+        .alert.success { background-color: #dfd; color: #27ae60; border-color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☁️ Testez votre Endpoint de Nuage de Mots</h1>
+        <h2>Endpoint: `/visualiser/nuage-de-mots/`</h2>
+
+        <div id="error-message" class="alert error" style="display: none;"></div>
+        <div id="success-message" class="alert success" style="display: none;"></div>
+
+        <form id="wordcloud-form">
+            <label for="file">1. Fichier de Données (CSV/Excel)</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+            
+            <h3>2. Paramètres du Nuage de Mots (`WordCloudParams`)</h3>
+            
+            <label for="colonne_texte">Colonne de Texte à analyser</label>
+            <input type="text" id="colonne_texte" placeholder="Ex: 'description', 'commentaire'" value="texte" required>
+
+            <label for="background_color">Couleur de Fond</label>
+            <input type="text" id="background_color" placeholder="Ex: 'white', 'black', 'blue'" value="white">
+
+            <label for="max_words">Nombre Maximum de Mots</label>
+            <input type="number" id="max_words" value="200" min="10">
+
+            <label for="width">Largeur de l'Image (px)</label>
+            <input type="number" id="width" value="800" min="100">
+
+            <label for="height">Hauteur de l'Image (px)</label>
+            <input type="number" id="height" value="400" min="100">
+
+            <label for="stopwords_lang">Langue des Stop Words (optionnel)</label>
+            <select id="stopwords_lang">
+                <option value="">(Aucun)</option>
+                <option value="english">Anglais</option>
+                <option value="french">Français</option>
+                <option value="spanish">Espagnol</option>
+                </select>
+
+            <button type="submit">Générer le Nuage de Mots</button>
+        </form>
+
+        <div id="results">
+            <h2>Résultat de l'API</h2>
+            <p id="message-api">En attente de l'exécution...</p>
+            <img id="plot-image" alt="Nuage de Mots">
+        </div>
+
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/visualiser/nuage-de-mots/';
+
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            
+            const statusMessage = document.getElementById('message-api');
+            const plotImage = document.getElementById('plot-image');
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+
+            statusMessage.textContent = 'Envoi de la requête... Veuillez patienter.';
+            plotImage.style.display = 'none';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (fileInput.files.length === 0) {
+                statusMessage.textContent = 'Veuillez sélectionner un fichier.';
+                return;
+            }
+
+            // 1. Construire l'objet JSON des paramètres du nuage de mots
+            const wordCloudParams = {
+                colonne_texte: document.getElementById('colonne_texte').value,
+                background_color: document.getElementById('background_color').value || "white",
+                max_words: parseInt(document.getElementById('max_words').value),
+                width: parseInt(document.getElementById('width').value),
+                height: parseInt(document.getElementById('height').value),
+                stopwords_lang: document.getElementById('stopwords_lang').value || null
+            };
+
+            // Nettoyer les paramètres pour ne pas envoyer des null pour des champs non définis
+            Object.keys(wordCloudParams).forEach(key => {
+                if (wordCloudParams[key] === null || (typeof wordCloudParams[key] === 'string' && wordCloudParams[key].trim() === '')) {
+                    delete wordCloudParams[key];
+                }
+            });
+
+            // 2. Construire l'objet FormData
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            // Le JSON des paramètres doit être une chaîne pour le Form() de FastAPI
+            // Nous supposons ici que l'endpoint WordCloud est configuré comme Reduction et Nettoyage
+            // avec un paramètre `params_json: str = Form(...)`
+            formData.append('params_json', JSON.stringify(wordCloudParams)); 
+
+            // 3. Envoyer la requête
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Succès
+                    const title = data.title || 'Nuage de Mots Généré';
+                    statusMessage.textContent = `Succès ! ${data.message || title}`;
+                    successDiv.textContent = `Nuage de mots généré avec succès !`;
+                    successDiv.style.display = 'block';
+                    
+                    // Affichage de l'image
+                    plotImage.src = `data:image/png;base64,${data.image_data}`;
+                    plotImage.alt = title;
+                    plotImage.style.display = 'block';
+
+                } else {
+                    // Erreur API (4xx ou 5xx)
+                    statusMessage.textContent = `Échec de la requête (Code ${response.status}): ${data.detail || 'Erreur inconnue'}`;
+                    errorDiv.textContent = data.detail ? (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)) : 'Erreur inconnue de l\'API.';
+                    errorDiv.style.display = 'block';
+                }
+
+            } catch (error) {
+                // Erreur réseau ou JavaScript
+                statusMessage.textContent = `Erreur réseau: Impossible de connecter à l'API.`;
+                errorDiv.textContent = `Erreur de connexion: Assurez-vous que l'API est lancée sur ${API_URL}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('wordcloud-form').addEventListener('submit', submitForm);
+        });
+    </script>
+</body>
+</html>

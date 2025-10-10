@@ -1,15 +1,34 @@
-from typing import Union
+from typing import Union, Dict, Any, List
 import pandas as pd
 import numpy as np
 from packages.modules.methode_acp import MethodeACP
 from packages.modules.methode_tsne import MethodeTSNE
 from packages.modules.methode_umap import MethodeUMAP
+from packages.modules.loading import DataLoader
+from packages.modules.file_tree import select_paths_from_tree
 import plotly.express as px
 
 class Visualisation_3D:
-    def __init__(self, df: Union[pd.DataFrame, np.ndarray, str]):
+    def __init__(self, df: Union[pd.DataFrame, np.ndarray, str] = None, file_tree: Dict[str, Any] = None, select_path: str = None):
         self.axes = 3
         self.df = df
+        self.file_tree = file_tree
+        self.select_path = select_path
+        self.loader = DataLoader()
+
+        if self.df is None and self.file_tree and self.select_path:
+            paths = select_paths_from_tree(self.file_tree, self.select_path)
+            if paths:
+                for p in paths:
+                    try:
+                        loaded = self.loader.load(p)
+                        if isinstance(loaded, pd.DataFrame):
+                            self.df = loaded
+                            break
+                    except Exception:
+                        continue
+            else:
+                raise FileNotFoundError(f"Aucun fichier trouvé pour la sélection '{self.select_path}' dans l'arbre fourni.")
     
     def visualisation_3D_acp(self):
         apc_3d_instance = MethodeACP(self.df)

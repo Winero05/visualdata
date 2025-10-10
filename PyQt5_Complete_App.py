@@ -13,10 +13,12 @@ from PyQt5.QtWidgets import (
     QPushButton, QLabel, QFileDialog, QListWidget, QListWidgetItem,
     QTextEdit, QTableWidget, QTableWidgetItem, QComboBox, QTabWidget,
     QScrollArea, QFrame, QSplitter, QDialog, QGridLayout, QGroupBox,
-    QRadioButton, QButtonGroup, QMessageBox
+    QRadioButton, QButtonGroup, QMessageBox, QSizePolicy
 )
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem
+from packages.modules.loading import DataLoader
 from PyQt5.QtCore import Qt, QMimeData, pyqtSignal, QSize
-from PyQt5.QtGui import QPixmap, QFont, QColor, QPalette, QDragEnterEvent, QDropEvent, QIcon
+from PyQt5.QtGui import QPixmap, QFont, QColor, QPalette, QDragEnterEvent, QDropEvent, QIcon, QCursor
 
 # Local DB for history
 try:
@@ -31,10 +33,12 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import matplotlib
 matplotlib.use('Qt5Agg')
+import traceback
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.lines as mlines
 
 # Essayer d'importer UMAP (optionnel)
 try:
@@ -504,226 +508,74 @@ class FileUploadSection(QWidget):
 
 
 # ==================== SECTION PREVISUALISATION ====================
-class FilePreviewSection(QWidget):
-    """Section de prévisualisation (1/6 gauche bas)"""
-    fileModified = pyqtSignal(dict)
-    
+# FilePreviewSection removed: preview and variable tree UI have been eliminated per request
+
+
+class VariablesSection(QWidget):
+    """Simple widget to display variables (columns) of the selected dataset."""
+    variableSelected = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
-        self.current_file = None
         self.initUI()
-        
+
     def initUI(self):
         layout = QVBoxLayout()
-        
-        # Header
-        header = QFrame()
-        header.setStyleSheet(f"""
-            QFrame {{
-                background: {Theme.GRADIENT_YELLOW_VIOLET};
-                {Theme.BORDER_YELLOW}
-                padding: 10px;
-            }}
-        """)
-        header_layout = QVBoxLayout()
-        
-        self.title_label = QLabel("Prévisualisation")
-        self.title_label.setStyleSheet("font-size: 16px; font-weight: bold;")
-        # filename_label removed (small file info under variables) per UX request
-        header_layout.addWidget(self.title_label)
-        header.setLayout(header_layout)
-        
-        # Variables header
-        self.variables_header = QFrame()
-        self.variables_header.setStyleSheet(f"""
-            QFrame {{
-                background: {Theme.GRADIENT_BLUE_VIOLET};
-                border-radius: 6px;
-                padding: 8px;
-            }}
-        """)
-        variables_title = QLabel("Variables")
-        variables_title.setStyleSheet("font-weight: bold;")
-        var_layout = QVBoxLayout()
-        var_layout.addWidget(variables_title)
-        self.variables_header.setLayout(var_layout)
-        self.variables_header.hide()
-        
-        # Variables container (vertical list inside a scroll area)
-        self.variables_container = QWidget()
-        self.variables_layout = QVBoxLayout()
-        self.variables_layout.setContentsMargins(4, 4, 4, 4)
-        self.variables_layout.setSpacing(6)
-        self.variables_container.setLayout(self.variables_layout)
-        self.vars_scroll = QScrollArea()
-        self.vars_scroll.setWidgetResizable(True)
-        self.vars_scroll.setWidget(self.variables_container)
-        
-        # Content preview
-        self.preview_area = QTextEdit()
-        self.preview_area.setReadOnly(True)
-        self.preview_area.setStyleSheet("""
-            QTextEdit {
-                border: 1px solid rgba(139, 92, 246, 0.2);
-                border-radius: 6px;
-                background-color: rgba(255, 255, 255, 0.5);
-                padding: 10px;
-            }
-        """)
-        # Image preview (hidden by default)
-        self.image_label = QLabel()
-        self.image_label.setAlignment(Qt.AlignCenter)
-        self.image_label.setScaledContents(False)
-        self.image_scroll = QScrollArea()
-        self.image_scroll.setWidgetResizable(True)
-        self.image_scroll.setWidget(self.image_label)
-        self.image_scroll.hide()
-        
-        # Bouton voir complet
-        btn_view_full = QPushButton("👁️ Voir le fichier complet")
-        btn_view_full.setStyleSheet(f"""
-            QPushButton {{
-                background-color: rgba(139, 92, 246, 0.05);
-                color: {Theme.VIOLET};
-                border: 1px solid {Theme.VIOLET};
-                border-radius: 6px;
-                padding: 8px;
-                font-weight: bold;
-            }}
-            QPushButton:hover {{
-                background-color: rgba(139, 92, 246, 0.15);
-            }}
-        """)
-        btn_view_full.clicked.connect(self.showFullContent)
-
+        header = QLabel("Variables")
+        header.setStyleSheet("font-weight: bold; font-size: 14px;")
         layout.addWidget(header)
-        layout.addWidget(self.variables_header)
-        layout.addWidget(self.vars_scroll)
-        layout.addWidget(self.preview_area)
-        layout.addWidget(self.image_scroll)
-        layout.addWidget(btn_view_full)
+
+        self.var_list = QTreeWidget()
+        self.var_list.setHeaderHidden(True)
+        self.var_list.setIndentation(8)
+        layout.addWidget(self.var_list)
 
         self.setLayout(layout)
-        
-        # Style général
-        self.setStyleSheet(f"""
-            QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
-                    stop:0 rgba(251, 191, 36, 0.05), 
-                    stop:0.5 rgba(139, 92, 246, 0.05), 
-                    stop:1 rgba(59, 130, 246, 0.05));
-            }}
-        """)
-        
-    def setFile(self, file_data):
-        """Affiche la prévisualisation d'un fichier"""
-        self.current_file = file_data
-        # filename_label was removed per UX request; keep file name in current_file only
-        
-        # Afficher les variables si CSV ou JSON
-        if file_data['type'] in ['csv', 'json'] and file_data['variables']:
-            self.variables_header.show()
-            # Clear previous variables
-            for i in reversed(range(self.variables_layout.count())):
-                w = self.variables_layout.itemAt(i).widget()
-                if w:
-                    w.setParent(None)
 
-            # Add variable labels vertically
-            colors = [Theme.BLUE, Theme.VIOLET, Theme.YELLOW]
-            for i, var in enumerate(file_data['variables']):
-                label = QLabel(var)
-                color = colors[i % 3]
-                label.setStyleSheet(f"""
-                    QLabel {{
-                        color: {color};
-                        border: none;
-                        padding: 4px 6px;
-                        font-weight: bold;
-                        font-size: 12px;
-                    }}
-                """)
-                label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                self.variables_layout.addWidget(label)
-        else:
-            self.variables_header.hide()
-        
-        # Afficher le contenu
-        if file_data['type'] == 'image' and isinstance(file_data.get('content'), QPixmap):
-            # Show image preview
-            self.preview_area.hide()
-            self.image_label.setPixmap(file_data['content'].scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            self.image_scroll.show()
-        else:
-            # Show text preview
-            self.image_scroll.hide()
-            self.preview_area.show()
-            content = file_data.get('content')
-            if isinstance(content, str):
-                # Limite à 500 caractères pour la preview
-                preview = content[:500]
-                if len(content) > 500:
-                    preview += "\n\n[...]"
-                self.preview_area.setText(preview)
+        # clicking a variable emits signal with variable name
+        self.var_list.itemClicked.connect(self._on_item_clicked)
+
+    def _on_item_clicked(self, item, column):
+        try:
+            name = item.text(0)
+            self.variableSelected.emit(name)
+        except Exception:
+            pass
+
+    def setVariables(self, file_data: dict):
+        """Populate the variable list from file_data. Accepts file_data with 'variables' or a pandas DataFrame under 'data' or 'df'."""
+        self.var_list.clear()
+        try:
+            vars_list = []
+            if file_data is None:
+                vars_list = []
+            elif isinstance(file_data, dict):
+                if 'variables' in file_data and file_data.get('variables'):
+                    vars_list = list(file_data.get('variables'))
+                elif file_data.get('data') is not None:
+                    try:
+                        vars_list = list(file_data.get('data').columns)
+                    except Exception:
+                        vars_list = []
+                elif file_data.get('df') is not None:
+                    try:
+                        vars_list = list(file_data.get('df').columns)
+                    except Exception:
+                        vars_list = []
             else:
-                self.preview_area.setText(str(content))
-                
-    def showFullContent(self):
-        """Affiche le contenu complet dans une dialog"""
-        if not self.current_file:
-            return
-            
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.current_file['name'])
-        dialog.resize(800, 600)
-        
-        layout = QVBoxLayout()
-        
-        if self.current_file['type'] == 'image':
-            label = QLabel()
-            label.setPixmap(self.current_file['content'].scaled(
-                780, 580, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-            label.setAlignment(Qt.AlignCenter)
-            scroll = QScrollArea()
-            scroll.setWidget(label)
-            layout.addWidget(scroll)
-        else:
-            text_edit = QTextEdit()
-            text_edit.setReadOnly(True)
-            text_edit.setText(self.current_file['content'])
-            layout.addWidget(text_edit)
-        
-        dialog.setLayout(layout)
-        dialog.exec_()
+                # fallback: if a DataFrame was passed directly
+                try:
+                    import pandas as _pd
+                    if isinstance(file_data, _pd.DataFrame):
+                        vars_list = list(file_data.columns)
+                except Exception:
+                    vars_list = []
 
-    def cleanData(self):
-        """Supprimer les lignes et colonnes entièrement vides du dataframe courant."""
-        if not self.current_file:
-            QMessageBox.information(self, "Nettoyage", "Aucun fichier sélectionné.")
-            return
-
-        df = self.current_file.get('data')
-        if df is None or not isinstance(df, pd.DataFrame):
-            QMessageBox.information(self, "Nettoyage", "Aucun DataFrame disponible pour ce fichier.")
-            return
-
-        before_shape = df.shape
-        # Drop rows and columns that are all NaN/empty
-        cleaned = df.dropna(axis=0, how='all')
-        cleaned = cleaned.dropna(axis=1, how='all')
-        after_shape = cleaned.shape
-
-        # Update file_data
-        self.current_file['data'] = cleaned
-        self.current_file['variables'] = list(cleaned.columns)
-        self.current_file['content'] = cleaned.to_string()
-
-        # Re-emit the modified file to notify others
-        self.fileModified.emit(self.current_file)
-
-        QMessageBox.information(self, "Nettoyage",
-                                f"Nettoyage terminé: {before_shape} → {after_shape} (lignes, colonnes)")
+            for v in vars_list:
+                it = QTreeWidgetItem([str(v)])
+                self.var_list.addTopLevelItem(it)
+        except Exception:
+            pass
 
 
 # ==================== CANVAS MATPLOTLIB ====================
@@ -803,8 +655,8 @@ class VisualizationSection(QWidget):
         chart_label = QLabel("Type de graphique")
         chart_label.setStyleSheet("font-weight: bold;")
         self.chart_combo = QComboBox()
+        # Removed histogram option as requested
         self.chart_combo.addItems([
-            "📊 Histogramme",
             "📈 Nuage de points",
             "📉 Graphique linéaire"
         ])
@@ -938,12 +790,8 @@ class VisualizationSection(QWidget):
         self.viz_layout = QVBoxLayout()
         self.viz_widget.setLayout(self.viz_layout)
         
-        self.stats_widget = QWidget()
-        self.comparison_widget = QWidget()
-        
+        # Only keep the reduction-method visualization tab
         self.tabs.addTab(self.viz_widget, "Méthode de réduction")
-        self.tabs.addTab(self.stats_widget, "Graphiques standards")
-        self.tabs.addTab(self.comparison_widget, "Comparaison")
         self.tabs.hide()
         
         self.content_layout.addWidget(self.drop_zone)
@@ -1075,8 +923,9 @@ class VisualizationSection(QWidget):
                     for cat in unique_cats:
                         mask = categories == cat
                         color = colors_map[cat]
+                        # Do not set per-point labels to avoid many legend entries
                         ax.scatter(X_reduced[mask, 0], X_reduced[mask, 1], X_reduced[mask, 2],
-                                 label=cat, c=color, s=50, alpha=0.6)
+                                 c=color, s=50, alpha=0.6)
                 else:
                     ax.scatter(X_reduced[:, 0], X_reduced[:, 1], X_reduced[:, 2],
                              c=Theme.BLUE, s=50, alpha=0.6)
@@ -1084,7 +933,7 @@ class VisualizationSection(QWidget):
                 ax.set_xlabel(f'{method_name} 1', color=Theme.BLUE, fontweight='bold')
                 ax.set_ylabel(f'{method_name} 2', color=Theme.VIOLET, fontweight='bold')
                 ax.set_zlabel(f'{method_name} 3', color=Theme.YELLOW, fontweight='bold')
-                ax.legend()
+                # legend intentionally removed (no legend shown)
                 ax.grid(True, alpha=0.3)
                 
             else:  # 2D
@@ -1110,15 +959,16 @@ class VisualizationSection(QWidget):
                     for cat in unique_cats:
                         mask = categories == cat
                         color = colors_map[cat]
+                        # Do not provide label per point; legend will be constructed from handles
                         ax.scatter(X_reduced[mask, 0], X_reduced[mask, 1],
-                                 label=cat, c=color, s=100, alpha=0.6, edgecolors='white', linewidth=1)
+                                 c=color, s=100, alpha=0.6, edgecolors='white', linewidth=1)
                 else:
                     ax.scatter(X_reduced[:, 0], X_reduced[:, 1],
                              c=Theme.BLUE, s=100, alpha=0.6, edgecolors='white', linewidth=1)
                 
                 ax.set_xlabel(f'{method_name} Dimension 1', color=Theme.BLUE, fontweight='bold', fontsize=12)
                 ax.set_ylabel(f'{method_name} Dimension 2', color=Theme.VIOLET, fontweight='bold', fontsize=12)
-                ax.legend()
+                # legend intentionally removed (no legend shown)
                 ax.grid(True, alpha=0.3)
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
@@ -1157,8 +1007,12 @@ class VisualizationSection(QWidget):
             self.viz_layout.addWidget(canvas_frame)
             
         except Exception as e:
-            error_label = QLabel(f"Erreur lors de la visualisation: {str(e)}")
-            error_label.setStyleSheet("color: red; padding: 20px;")
+            tb = traceback.format_exc()
+            error_text = f"Erreur lors de la visualisation:\n{str(e)}\n\n{tb}"
+            error_label = QTextEdit()
+            error_label.setReadOnly(True)
+            error_label.setText(error_text)
+            error_label.setStyleSheet("color: red; padding: 6px; background: #fff0f0;")
             self.viz_layout.addWidget(error_label)
 
     def exportCurrentImage(self):
@@ -1243,12 +1097,51 @@ class MainWindow(QMainWindow):
         # Section upload (haut gauche)
         self.upload_section = FileUploadSection()
         
-        # Section preview (bas gauche)
-        self.preview_section = FilePreviewSection()
-        
+        # Left column: only upload section (preview/variables removed)
         left_splitter.addWidget(self.upload_section)
-        left_splitter.addWidget(self.preview_section)
-        left_splitter.setSizes([400, 400])
+        # Add a file-tree panel in the left column (hierarchical files)
+        self.file_tree = QTreeWidget()
+        self.file_tree.setHeaderHidden(True)
+        self.file_tree.setIndentation(12)
+        # Remove visual white boxed background so the area above variables looks integrated
+        try:
+            self.file_tree.setStyleSheet("background: transparent; border: none;")
+            # remove frame lines if present
+            try:
+                self.file_tree.setFrameShape(QFrame.NoFrame)
+            except Exception:
+                pass
+            self.file_tree.setUniformRowHeights(True)
+        except Exception:
+            pass
+        left_splitter.addWidget(self.file_tree)
+        # Variables panel below the file tree
+        self.variables_section = VariablesSection()
+        left_splitter.addWidget(self.variables_section)
+        left_splitter.setSizes([300, 300, 300])
+
+        # populate the file tree from packages/data (best-effort)
+        try:
+            root_dir = os.path.join(os.path.dirname(__file__), 'packages', 'data')
+            loader = DataLoader()
+            tree = loader.build_tree_from_dir(root_dir)
+
+            def add_nodes(parent_item, node):
+                for name, child in sorted(node.get('children', {}).items()):
+                    item = QTreeWidgetItem([name])
+                    parent_item.addChild(item)
+                    # if leaf file, store path
+                    if child.get('is_file') and child.get('path'):
+                        item.setData(0, Qt.UserRole, child.get('path'))
+                    add_nodes(item, child)
+
+            self.file_tree.clear()
+            add_nodes(self.file_tree.invisibleRootItem(), tree)
+            self.file_tree.expandToDepth(1)
+            self.file_tree.itemClicked.connect(self._on_file_tree_item_clicked)
+        except Exception:
+            # leave tree empty if scan fails
+            pass
         
         # Section visualisation (droite 5/6)
         self.viz_section = VisualizationSection()
@@ -1278,11 +1171,9 @@ class MainWindow(QMainWindow):
         # Connexions des signaux
         self.upload_section.fileLoaded.connect(self.onFileLoaded)
         self.upload_section.fileSelected.connect(self.onFileSelected)
-        # Preview modifications (cleaning) -> update internal state
-        self.preview_section.fileModified.connect(self.onFileModified)
-        # Visualization header clean button -> trigger preview clean
-        self.viz_section.requestClean.connect(self.preview_section.cleanData)
-        
+        # When visualization requests a clean, call onFileModified (default handler)
+        self.viz_section.requestClean.connect(self.onFileModified)
+
         # Style général
         self.setStyleSheet("""
             QMainWindow {
@@ -1382,8 +1273,16 @@ class MainWindow(QMainWindow):
         
     def onFileSelected(self, file_data):
         """Appelé quand un fichier est sélectionné"""
-        self.preview_section.setFile(file_data)
-        self.viz_section.setFile(file_data)
+        # preview_section removed — update visualization only
+        try:
+            # update variables panel
+            try:
+                self.variables_section.setVariables(file_data)
+            except Exception:
+                pass
+            self.viz_section.setFile(file_data)
+        except Exception:
+            pass
 
     def onFileModified(self, file_data):
         """Mettre à jour les structures internes quand le fichier est modifié (ex: nettoyage)."""
@@ -1417,8 +1316,42 @@ class MainWindow(QMainWindow):
             pass
 
         # Refresh preview and visualizations
-        self.preview_section.setFile(file_data)
-        self.viz_section.setFile(file_data)
+        # preview_section removed — refresh visualization only
+        try:
+            self.viz_section.setFile(file_data)
+        except Exception:
+            pass
+
+    def _on_file_tree_item_clicked(self, item, column):
+        """Handler when a file in the left tree is clicked. Attempts to load the file and forward to the visualizer."""
+        try:
+            path = item.data(0, Qt.UserRole)
+            if not path:
+                return
+            loader = DataLoader()
+            loaded = loader.load(path)
+            # Build a minimal file_data structure expected by the app
+            file_data = {
+                'name': os.path.basename(path),
+                'path': path,
+            }
+            # If loader returned a DataFrame, attach it under 'df'
+            try:
+                import pandas as _pd
+                if isinstance(loaded, _pd.DataFrame):
+                    file_data['df'] = loaded
+                else:
+                    file_data['raw'] = loaded
+            except Exception:
+                file_data['raw'] = loaded
+
+            # Use existing selection handler to update visuals
+            self.onFileSelected(file_data)
+        except Exception as e:
+            try:
+                QMessageBox.critical(self, "Erreur", f"Impossible de charger le fichier: {e}")
+            except Exception:
+                pass
 
 
 # ==================== MAIN ====================
@@ -1437,8 +1370,30 @@ def main():
         pass
 
     window = MainWindow()
-    # Ouvrir en plein écran au-dessus de la barre des tâches
-    window.showFullScreen()
+    # Positionne et maximise la fenêtre sur l'écran où se trouve le curseur (support multi-écrans)
+    try:
+        screen = None
+        try:
+            for s in QApplication.screens():
+                if s.geometry().contains(QCursor.pos()):
+                    screen = s
+                    break
+        except Exception:
+            screen = QApplication.primaryScreen()
+
+        if not screen:
+            screen = QApplication.primaryScreen()
+
+        if screen:
+            geom = screen.availableGeometry()
+            # set geometry to available area (respects taskbar) and maximize
+            window.setGeometry(geom)
+            window.showMaximized()
+        else:
+            window.showMaximized()
+    except Exception:
+        # fallback
+        window.showMaximized()
     
     sys.exit(app.exec_())
 

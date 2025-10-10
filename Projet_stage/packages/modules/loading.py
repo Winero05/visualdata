@@ -9,6 +9,8 @@ from PIL import Image
 import numpy as np
 from pathlib import Path
 from typing import Union
+from typing import List, Dict, Any
+from packages.modules.file_tree import make_tree_from_paths
 
 class DataLoader:
     """
@@ -115,3 +117,25 @@ class DataLoader:
             raise FileNotFoundError(f"Erreur : Le fichier à l'adresse '{file_path.split("/")[-1]}' est introuvable.")
         except Exception as e:
             raise Exception(f"Une erreur est survenue lors du chargement : {e}")
+
+    def build_tree_from_dir(self, root_dir: str, patterns: List[str] = None) -> Dict[str, Any]:
+        """Scanne `root_dir` et construit un arbre de fichiers. Optionnellement filtre par `patterns` (ex: ['*.csv','*.png'])."""
+        p = Path(root_dir)
+        if not p.exists():
+            raise FileNotFoundError(f"Le répertoire {root_dir} est introuvable.")
+
+        paths: List[str] = []
+        if patterns:
+            for pat in patterns:
+                for f in p.rglob(pat):
+                    paths.append(str(f))
+        else:
+            for f in p.rglob('*'):
+                if f.is_file():
+                    paths.append(str(f))
+
+        return make_tree_from_paths(paths)
+
+    def build_tree_from_list(self, paths: List[str]) -> Dict[str, Any]:
+        """Construit un arbre à partir d'une liste de chemins (strings)."""
+        return make_tree_from_paths(paths)

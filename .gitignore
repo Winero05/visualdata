@@ -1,0 +1,10 @@
+venv
+build
+__pycache__
+*.pyc
+source/
+Projet_stage/.env/
+notes_personnel/
+.coverage
+notes_personnel/note.md
+notes_personnel/docker_commandes.md

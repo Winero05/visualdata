@@ -615,7 +615,7 @@ class VisualizationSection(QWidget):
                     stop:0.5 rgba(139, 92, 246, 0.08), 
                     stop:1 rgba(251, 191, 36, 0.08));
                 border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-                padding: 15px;
+                padding: 6px 15px; /* reduce top/bottom padding to remove empty space */
             }}
         """)
         header_layout = QVBoxLayout()
@@ -726,27 +726,78 @@ class VisualizationSection(QWidget):
         self.btn_load_here.clicked.connect(lambda: self.requestFileLoad.emit())
         controls_layout.addWidget(self.btn_load_here, 0, 3, 2, 1)'''
 
-        # Export image
+        # Theme toggle button placed above Export and Clean buttons
+        try:
+            # initialize theme state if missing
+            if not hasattr(self, 'theme'):
+                self.theme = 'light'
+            self.btn_theme = QPushButton("☀")
+            self.btn_theme.setToolTip("Basculer mode jour / nuit")
+            # make it visually larger
+            self.btn_theme.setFixedSize(42, 36)
+            def _on_theme_clicked():
+                try:
+                    win = self.window()
+                    if win and hasattr(win, 'toggle_theme'):
+                        win.toggle_theme()
+                except Exception:
+                    pass
+            self.btn_theme.clicked.connect(_on_theme_clicked)
+            self.btn_theme.setStyleSheet("""
+                QPushButton {
+                    background-color: rgba(255,255,255,0.9);
+                    border: 1px solid rgba(0,0,0,0.08);
+                    border-radius: 6px;
+                    font-weight: bold;
+                }
+                QPushButton:hover { background-color: rgba(255,255,255,1); }
+            """)
+            # place a spacer to push the theme button to the far right, then place the theme button in column 6
+            spacer = QWidget()
+            spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            # place theme button slightly to the left (column 5) and spacer to the right (column 6)
+            self.btn_theme.setObjectName("btn_theme")
+            # small visual nudge upwards and left
+            self.btn_theme.setStyleSheet(self.btn_theme.styleSheet() + " margin-top: -4px; margin-left: -6px;")
+            controls_layout.addWidget(self.btn_theme, 0, 5)
+            controls_layout.addWidget(spacer, 0, 6)
+        except Exception:
+            pass
+
+        # Export image (moved to row 1 so theme button sits above)
         self.btn_export = QPushButton("💾 Teleharger image")
         self.btn_export.setToolTip("Telecharger l'image affichée (PNG)")
         self.btn_export.setFixedHeight(34)
         self.btn_export.clicked.connect(self.exportCurrentImage)
-        controls_layout.addWidget(self.btn_export, 0, 4, 2, 1)
+        controls_layout.addWidget(self.btn_export, 1, 4)
 
-        # Clean button in header (trigger preview cleaning)
+        # Clean button in header (trigger preview cleaning) (moved to row 1)
         self.btn_clean_top = QPushButton("🧹 Nettoyer (suppr. vides)")
         self.btn_clean_top.setToolTip("Supprimer les lignes/colonnes vides du DataFrame affiché")
         self.btn_clean_top.setFixedHeight(34)
         # emit a signal; MainWindow will connect it to preview_section.cleanData
         self.btn_clean_top.clicked.connect(lambda: self.requestClean.emit())
-        controls_layout.addWidget(self.btn_clean_top, 0, 5, 2, 1)
+        controls_layout.addWidget(self.btn_clean_top, 1, 5)
         
         controls.setLayout(controls_layout)
         
         # Info fichier actif banner removed per UX request
         
-        #header_layout.addWidget(title)
-        header_layout.addWidget(controls)
+        # Create a top row that contains controls on the left and window controls on the right
+        top_row = QWidget()
+        top_row_layout = QHBoxLayout()
+        top_row_layout.setContentsMargins(0, 0, 0, 0)
+        top_row_layout.addWidget(controls)
+        # insert a spacer then the window_controls (which already exists later)
+        top_row_layout.addStretch()
+        try:
+            top_row_layout.addWidget(self.window_controls)
+        except Exception:
+            # if window_controls not yet constructed, we'll add it later in MainWindow
+            pass
+        top_row.setLayout(top_row_layout)
+
+        header_layout.addWidget(top_row)
     # header_layout.addWidget(self.file_info)  # removed
         header.setLayout(header_layout)
         
@@ -1219,12 +1270,70 @@ class MainWindow(QMainWindow):
                 }
             """)
 
+        # Add minimize, full/restore and close buttons (theme button moved into controls area)
         wc_layout.addWidget(btn_min)
         wc_layout.addWidget(btn_toggle)
         wc_layout.addWidget(btn_close)
+        wc_layout.addStretch()
         self.window_controls.setLayout(wc_layout)
         self.window_controls.setFixedHeight(34)
         self.window_controls.show()
+
+        # Apply initial theme
+        try:
+            self.apply_theme(self.theme)
+        except Exception:
+            pass
+
+    def apply_theme(self, theme_name: str):
+        """Apply the named theme to the application (light or dark)."""
+        self.theme = theme_name
+        if theme_name == 'dark':
+            # Dark palette
+            dark_style = """
+                QMainWindow { background-color: #121212; }
+                QLabel, QComboBox, QPushButton, QTreeWidget, QListWidget { color: #e6e6e6; }
+                QWidget { background-color: #1e1e1e; }
+                QFrame { background-color: #1e1e1e; }
+                QTabWidget::pane { background-color: #1b1b1b; }
+            """
+            self.setStyleSheet(dark_style)
+            try:
+                if hasattr(self, 'btn_theme'):
+                    self.btn_theme.setText("🌙")
+                else:
+                    btn = self.findChild(QPushButton, 'btn_theme')
+                    if btn:
+                        btn.setText("🌙")
+            except Exception:
+                pass
+        else:
+            # Light theme (defaults)
+            light_style = """
+                QMainWindow { background-color: #f5f5f5; }
+                QLabel, QComboBox, QPushButton, QTreeWidget, QListWidget { color: #222; }
+                QWidget { background-color: #ffffff; }
+                QFrame { background-color: #ffffff; }
+                QTabWidget::pane { background-color: white; }
+            """
+            self.setStyleSheet(light_style)
+            try:
+                if hasattr(self, 'btn_theme'):
+                    self.btn_theme.setText("☀")
+                else:
+                    btn = self.findChild(QPushButton, 'btn_theme')
+                    if btn:
+                        btn.setText("☀")
+            except Exception:
+                pass
+
+    def toggle_theme(self):
+        """Toggle between light and dark themes."""
+        try:
+            new_theme = 'dark' if getattr(self, 'theme', 'light') == 'light' else 'light'
+            self.apply_theme(new_theme)
+        except Exception:
+            pass
 
     def resizeEvent(self, event):
         # Fixer la largeur de la colonne gauche à 20% de la largeur de la fenêtre

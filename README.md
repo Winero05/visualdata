@@ -51,3 +51,9 @@ Insomnie : La personne éprouve des difficultés à s’endormir ou à rester e
 Apnée du sommeil : La personne souffre de pauses respiratoires pendant son sommeil, ce qui perturbe ses habitudes de sommeil et peut entraîner des risques pour la santé.
 
 > L'énoncé ci-dessus peut-être retrouver sur la platforme *kaggle* à l'adresse suivante: [Sleep Health and Lifestyle Dataset](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
+
+```bash
+
+uvicorn app.main:app --reload
+
+```

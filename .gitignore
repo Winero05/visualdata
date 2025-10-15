@@ -1,10 +1,13 @@
 venv
-build
+.vscode/
 __pycache__
 *.pyc
+.pytest_cache
+.vscode/
 source/
 Projet_stage/.env/
 notes_personnel/
 .coverage
 notes_personnel/note.md
 notes_personnel/docker_commandes.md
+/home/adama/visualdata/Projet_stage/src/

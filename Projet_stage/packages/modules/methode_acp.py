@@ -19,6 +19,8 @@ class MethodeACP:
             acp = PCA(n_components=nombre_dimenssion) # n_components mentionne les axes (dimenssions)
 
             X_acp = acp.fit_transform(X_normaliser)
-            
-            return X_acp
+
+            X_reconstructed = pca.inverse_transform(X_pca)
+
+            return X_reconstructed
 

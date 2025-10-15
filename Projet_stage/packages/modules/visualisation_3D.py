@@ -4,6 +4,7 @@ import numpy as np
 from packages.modules.methode_acp import MethodeACP
 from packages.modules.methode_tsne import MethodeTSNE
 from packages.modules.methode_umap import MethodeUMAP
+from packages.modules.auto_selector import AutoSelector
 import plotly.express as px
 
 class Visualisation_3D:
@@ -89,3 +90,13 @@ class Visualisation_3D:
         fig.write_image("/home/adama/visualdata/Projet_stage/tests/resultats/img/3D/Reduction_UMAP_3D.png", format="png")
         fig.write_html("/home/adama/visualdata/Projet_stage/tests/resultats/html/3D/Reduction_UMAP_3D.html")
 
+    def visualisation_automatique(self):
+        auto = AutoSelector(self.df, nombre_de_dimension=3)
+        methode = auto.detecter_methode()
+        match methode:
+            case 'pca':
+                return self.visualisation_3D_acp()
+            case 'tsne':
+                return self.visualisation_3D_tsne()
+            case 'umap':
+                return self.visualisation_3D_umap()

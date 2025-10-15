@@ -1,0 +1,286 @@
+:root {
+    --my_background_color: darkslategray;
+}
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+header {
+    padding: 1em 0 1em;
+    display: flex;
+    color: #ffffff;
+    justify-content: center;
+}
+
+h2 {
+    align-self: center;
+}
+
+body {
+    background-color: var(--my_background_color);
+}
+
+main {
+    width: 100%;
+    height: 86vh;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: aquamarine;
+}
+
+button {
+    border: none;
+    border-radius: 30px;
+}
+
+.dashbord {
+    width: 20%;
+    height: 100%;
+    background-color: var(--my_background_color);
+}
+
+.open_close_dashbord_contener {
+    position: relative;
+    width: 20%;
+    height: 8%;
+    display: flex;
+    float: right;
+    /* top: 3%; */
+    right: 2%;
+    cursor: pointer;
+    align-items: center;
+    border-radius: 3px;
+    justify-content: space-evenly;
+    flex-direction: column;
+    background-color: gray;
+    opacity: .7;
+}
+
+.open_close_dashbord_contener:hover {
+    opacity: 1;
+    transform: rotate(15);
+}
+
+.open_close_dashbord_barret {
+    position: relative;
+    width: 45px;
+    height: 20%;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.visual_contener {
+    position: relative;
+    top: 15em;
+    width: 100%;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    /* background-color: aliceblue; */
+    opacity: .7;
+}
+
+.visual_2d,
+.visual_3d {
+    width: 100%;
+    height: 30%;
+    font-size: larger;
+    font-weight: 700;
+    cursor: not-allowed;
+    background-color: aqua;
+}
+
+.visual_2d::before:hover,
+.visual_3d::before:hover {
+    content: "Veuillez charger les données à visualiser.";
+}
+
+.contener {
+    width: 80%;
+    display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--my_background_color);
+}
+
+#plot {
+position: relative;
+    width: 95%;
+    height: 400px;
+    overflow: scroll;
+    align-self: center;
+    border-radius: 8px;
+    display: flex;
+    background-color: cadetblue;
+    /* text-align: center; */
+    /* border: 2px solid #ccc;
+    justify-content: center;
+    align-items: center; */
+}
+
+.loading_data_icon {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 5px;
+    /* border-style: dashed; */
+    /* background-color: aquamarine; */
+    content: "Veuillez glisser déposé un fichier d\'extension (.csv, .json, .text, .sql, .jpeg, .png)";
+}
+
+.loading_data_icon > div{
+    position: relative;
+    border-radius: 5px;
+    width: 10%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    border-style: dashed;
+    justify-content: center;
+}
+
+.icon_importation_de_fichier {
+    position: relative;
+    width: 10em;
+    height: 10em;
+    cursor: pointer;
+}
+
+/* .icon_importation_de_fichier::after {
+    color: whitesmoke;
+    content: ".csv, .json, .txt, .sql, . jpg, jpeg";
+    display: flex;
+    width: 4em;
+    height: 3em;
+    background-color: crimson;
+} */
+
+table {
+    position: relative;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    /* text-align: center; */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.chargement_de_fichier_contener {
+    display: flex;
+    position: relative;
+    top: 5em;
+    height: 3em;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn_path_file {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: bolder larger normal;
+    cursor: pointer;
+    border-radius: 25px;
+    background-color: aqua;
+}
+
+.box_modal {
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.myPopUp {
+    width: 60%;
+    height: 45%;
+    display: flex;
+    flex-wrap: wrap;
+    color: #ffffff;
+    border-radius: 40px;
+    align-items: end;
+    justify-content: center;
+    font: bold 2em serif, sans-serif;
+    background-color: var(--my_background_color);
+}
+
+.myPopUp > label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 100;
+    justify-content: center;
+}
+
+.myPopUp > input {
+    width: 70%;
+    height: 4em;
+    border: none;
+    display: flex;
+    justify-content: center;
+    font-family: 'Courier New', Courier, monospace, serif, sans-serif;
+}
+
+.myPopUp > button {
+    position: relative;
+    top: -2em;
+    width: 40%;
+    height: 4em;
+    border: none;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: aquamarine;
+    /* font-family: 'Courier New', Courier, monospace, serif, sans-serif; */
+}
+
+.myPopUp>button:hover {
+    opacity: .8;
+}
+
+.myPopUp>button>span {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: bold 2em serif, sans-serif;
+    /* font-size: x-large; */
+}
+
+#reduction_methode_options {
+    cursor: not-allowed;
+}
+
+.resumer_des_donnees {
+    width: 95%;
+    height: 30%;
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #ccc;
+}

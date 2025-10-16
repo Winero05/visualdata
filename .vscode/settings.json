@@ -1,31 +1,14 @@
 {
-  // Active et configure pytest pour exécuter les tests depuis le répertoire 'tests'
-  "python.testing.pytestEnabled": true,
-  "python.testing.pytestArgs": ["tests"],
-  "python.testing.unittestEnabled": false,
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportArgumentType": false,
-    "reportUnknownParameterType": false,
-    "reportMissingModuleSource": false,
-    "reportMissingImports": false,
-    "reportUnknownVariableType": false,
-    "reportUnknownMemberType": false,
-    "reportAttributeAccessIssue": false,
-    "reportUntypedFunctionDecorator": false,
-    "reportUndefinedVariable": false
-  },
-  // Emplacement de l'environnement virtuel
-  "python.pythonPath": "/home/adama/visualdata/venv",
-  // Configure le répertoire de travail (la racine du projet) dans le terminal intégré
-  "terminal.integrated.cwd": "/home/adama/visualdata/Projet_stage",
-  // Définir un chemin d'importation supplémentaire si nécessaire
-  "python.autoComplete.extraPaths": ["/home/adama/visualdata/Projet_stage"],
-  "python.envFile": "${workspaceFolder}/.env",
-  "python.env": {
-    "PYTHONPATH": "/home/adama/visualdata/Projet_stage"
-  },
-  "python.testing.cwd": "/home/adama/visualdata/Projet_stage",
-  "DockerRun.DisableAutoGenerateConfig": true,
-  "remote.autoForwardPortsFallback": 0,
-  "editor.fontLigatures": true
+    // Active et configure pytest pour exécuter les tests depuis le répertoire 'tests'
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportArgumentType" : false,
+        "reportUnknownParameterType" : false,
+        "reportMissingModuleSource" : false,
+        "reportMissingImports" : false
+    },
 }

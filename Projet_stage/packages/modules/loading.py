@@ -4,7 +4,7 @@ import json
 import sqlite3
 import yaml
 import os
-import pyarrow.parquet as pq
+# import pyarrow.parquet as pq
 from PIL import Image
 import numpy as np
 from pathlib import Path

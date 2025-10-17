@@ -19,9 +19,9 @@ app.add_middleware(
 )
 
 # Fichiers à charger
-data_path_1 = "/home/adama/visualdata/Projet_stage/packages/data/csv/Ensemble_de_donnees_sur_la_sante_du_sommeil_et_le_mode_de_vie/Sleep_health_and_lifestyle_dataset.csv"
-data_path_2 = "/home/adama/visualdata/Projet_stage/packages/data/csv/Sante_mental_des_etudiants/Student_Mental_health.csv"
-file_path = "/home/adama/visualdata/Projet_stage/tests/data/csv/insurance.csv"
+data_path_1 = "C:\Users\adama\3D Objects\schoolProjet\courS6\projet_de_stage\visualdata\Projet_stage\packages\data\csv\Ensemble_de_donnees_sur_la_sante_du_sommeil_et_le_mode_de_vie\Sleep_health_and_lifestyle_dataset.csv"
+data_path_2 = "C:\Users\adama\3D Objects\schoolProjet\courS6\projet_de_stage\visualdata\Projet_stage\packages\data\csv\Sante_mental_des_etudiants\Student_Mental_health.csv"
+file_path = "C:\Users\adama\3D Objects\schoolProjet\courS6\projet_de_stage\visualdata\Projet_stage\tests\data\csv\insurance.csv"
 
 # Endpoints
 url_send_data_1_on_server = "/v_01/data_1"

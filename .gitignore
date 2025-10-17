@@ -7,7 +7,7 @@ node_modules
 notes_personnel
 notes_personnel/note.md
 notes_personnel/docker_commandes.md
-venv
+Projet_stage/env
 Projet_stage/__pycache__
 Projet_stage/.github
 Projet_stage/.pytest_cache

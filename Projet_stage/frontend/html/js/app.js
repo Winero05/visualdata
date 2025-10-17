@@ -65,6 +65,16 @@ function afficherCSV(csvText) {
 async function load() {
     const url_or_filePath = document.getElementById("url_or_filePath").value;
     console.log(url_or_filePath)
+    fetch(url_or_filePath)
+        .then((response) => {
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            console.log(response.blob());
+
+            return response.blob();
+        })
+    // const donnees_charger = fetch(url_or_filePath)
 }
 
 function afficherResumerDesDonnees(params) {

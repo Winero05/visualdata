@@ -311,7 +311,11 @@ app.add_middleware(
 async def favicon():
     return FileResponse("favicon.ico")
 
-@app.get("/api-documentation", response_class=HTMLResponse, tags=["Documentation"], summary="Documentation complète du projet")
+@app.get(
+    "/api-documentation",
+    response_class=HTMLResponse,
+    tags=["Documentation"],
+    summary="Documentation complète du projet")
 def get_api_documentation():
     """
     Affiche la documentation complète de l'API (html).
@@ -331,8 +335,13 @@ def get_api_documentation():
                 <title>Documentation de l'API</title>
                 <link rel="icon" href="/favicon.ico" type="image/x-icon">
                 <style>
-                    body {{ 
-                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    body {{
+                        font-family: -apple-system,
+                        BlinkMacSystemFont,
+                        "Segoe UI", Roboto,
+                        "Helvetica Neue",
+                        Arial,
+                        sans-serif;
                         line-height: 1.6;
                         padding: 20px 40px;
                         max-width: 900px;
@@ -342,11 +351,28 @@ def get_api_documentation():
                         border: 1px solid #ddd;
                         border-radius: 8px;
                     }}
-                    h1, h2, h3 {{ border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }}
-                    code {{ background-color: #f6f8fa; padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }}
-                    pre {{ background-color: #f6f8fa; padding: 16px; overflow: auto; border-radius: 3px; }}
-                    table {{ border-collapse: collapse; width: 100%; margin: 1em 0; }}
-                    th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                    h1, h2, h3 {{
+                        border-bottom: 1px solid #eaecef;
+                        padding-bottom: 0.3em;
+                        }}
+                    code {{
+                        background-color: #f6f8fa;
+                        padding: 0.2em 0.4em; margin: 0;
+                        font-size: 85%; border-radius: 3px;
+                        }}
+                    pre {{
+                        background-color: #f6f8fa;
+                        padding: 16px; overflow: auto;
+                        border-radius: 3px;
+                        }}
+                    table {{
+                        border-collapse: collapse;
+                        width: 100%; margin: 1em 0;
+                        }}
+                    th, td {{
+                        border: 1px solid #ddd;
+                        padding: 8px; text-align: left;
+                        }}
                     th {{ background-color: #f2f2f2; }}
                 </style>
             </head>
@@ -423,10 +449,11 @@ DEFAULT_CLEANING_JSON = json.dumps(CLEANING_DEFAULTS, separators=(',', ':'))
 def nettoyer_donnees(
     # Utilise la constante compacte pour un affichage aligné dans Swagger UI
     params_json: str = Form(
-        DEFAULT_CLEANING_JSON, 
-        description="Paramètres de nettoyage au format JSON. Par défaut : {'supprimer_doublons':true,'supprimer_lignes_na':false}"
+        DEFAULT_CLEANING_JSON,
+        description=
+        "Paramètres de nettoyage au format JSON. Par défaut : {'supprimer_doublons':true,'supprimer_lignes_na':false}"
     ),
-    df_data: pd.DataFrame = Depends(get_data_source) 
+    df_data: pd.DataFrame = Depends(get_data_source)
 ) -> CleaningResponse:
     
     # 1. Désérialisation et Validation

@@ -4,4 +4,8 @@ __pycache__/
 .venv/
 venv/
 .env
-
+.vscode
+img
+.pytest_cache
+key
+env

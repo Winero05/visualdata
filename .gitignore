@@ -3,6 +3,8 @@
 .vscode\launch.json
 .vscode\settings.json
 env
+img
+key
 node_modules
 notes_personnel
 notes_personnel/note.md

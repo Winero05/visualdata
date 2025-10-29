@@ -62,24 +62,47 @@ function afficherCSV(csvText) {
     plot.appendChild(tableau);
 }
 
-async function load() {
-    const url_or_filePath = document.getElementById("url_or_filePath").value;
-    console.log(url_or_filePath)
-    fetch(url_or_filePath)
-        .then((response) => {
-            if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            console.log(response.blob());
+const myPopUp = document.getElementsByClassName("myPopUp")[0];
 
-            return response.blob();
+// console.log(myPopUp[0]);
+
+if (!myPopUp) {
+    console.warn("Element with class 'myPopUp' not found.");
+} else {
+    myPopUp.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const url_or_filePath = event.target[0].value;
+        const ishttp = url_or_filePath.split(":")[0]
+        if ((ishttp === "http") || (ishttp+"s" === "https")) {
+            fetch(url_or_filePath)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    console.log(response.blob());
+                    return response.blob();
+            })
+        } else {
+            console.log("Le chemin entré est différent des options proposées.");
+            url_or_filePath = "http://127.0.0.1:8000/" + url_or_filePath + ":path";
+            fetch(url_or_filePath)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                console.log(response.blob());
+                return response.blob();
         })
-    // const donnees_charger = fetch(url_or_filePath)
+        }
+        // console.log(http)
+        // console.log(url_or_filePath)
+    });
 }
+
 
 function afficherResumerDesDonnees(params) {
     const resumer_des_donnees = document.getElementsByClassName(
-      "resumer_des_donnees"
+        "resumer_des_donnees"
     )[0];
     const tableau = document.createElement("table");
     const thead = document.createElement("thead");

@@ -21,11 +21,11 @@
             <div class="chargement_de_fichier_contener">
                 <button class="btn_path_file">Choisir un fichier</button>
                 <div class="box_modal">
-                    <div class="myPopUp">
+                    <form class="myPopUp" method="GET" name="form">
                         <label for="url_or_filePath">Entrer l'URL des données ou le chemin du fichier.</label>
                         <input type="text" id="url_or_filePath" placeholder="https://url_des_donnees ou bien C:/..." name="Reçevoir une URL ou un chemin du discque local.">
-                        <button type="submit" class="btn_url_or_filePath" onclick="load();"><span>Envoyer</span></button>
-                    </div>
+                        <button type="submit" class="btn_url_or_filePath"><span>Envoyer</span></button>
+                    </form>
                 </div>
                 <select name="reduction_methode_options" id="reduction_methode_options" aria-label="Méthodes de réduction de dimensions" disabled>
                     <option value=""></option>

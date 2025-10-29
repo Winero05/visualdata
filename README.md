@@ -1,59 +1,18 @@
-# Ensemble de données sur la santé du sommeil et le mode de vie
+# Objectif et usage du projet
 
-## I. Présentation de l'ensemble de données
+## Objectif
 
-L'ensemble de données sur le sommeil, la santé et le mode de vie comprend 400 lignes et 13 colonnes, couvrant un large éventail de variables liées au sommeil et aux habitudes quotidiennes. Il inclut des informations telles que le sexe, l'âge, la profession, la durée et la qualité du sommeil, le niveau d'activité physique, le niveau de stress, l'IMC, la tension artérielle, la fréquence cardiaque, le nombre de pas quotidiens et la présence ou l'absence de troubles du sommeil.
+Ce projet vise à premettre à un médecin de visualiser des données numérique contenu dans un fichier via une interface utilisateur après qu'il se connecte à l'interface avec ses information personnels (e-mail et mot de pass) et qu'il entre le chemin d'un fichier contenant des données dans sa machine ou un lien de données sur un dépôt distant.
 
-## II. Principales caractéristiques de l'ensemble de données
+Le dossier `frontend` contient tout ce qu'il faut pour l'interface utilisateur et le dossier `backend` contient l'API permettant d'interagir avec le `frontend`.
 
-1. **Mesures complètes du sommeil** : Explorez la durée et la qualité du sommeil, ainsi que les facteurs qui influencent les habitudes de sommeil.
+## Voici quelques action que doit faire l'utilisateur de l'outil
 
-2. **Facteurs liés au mode de vie** : Analysez les niveaux d'activité physique, le niveau de stress et les catégories d'IMC.
-
-3. **Santé cardiovasculaire** : Examinez les mesures de la tension artérielle et de la fréquence cardiaque.
-
-4. **Analyse des troubles du sommeil** : Identifiez la survenue de troubles du sommeil tels que l'insomnie et l'apnée du sommeil.
-
-## III. Colonnes de l'ensemble de données
-
-ID de la personne : Identifiant de chaque individu.
-
-Sexe : Sexe de la personne (homme/femme).
-
-Âge : L'âge de la personne en années.
-
-Profession : La profession de la personne.
-
-Durée du sommeil (heures) : Le nombre d'heures de sommeil par jour.
-
-Qualité du sommeil (échelle : 1 à 10) : Évaluation subjective de la qualité du sommeil, de 1 à 10.
-
-Niveau d'activité physique (minutes/jour) : Le nombre de minutes d'activité physique quotidienne.
-
-Niveau de stress (échelle : 1 à 10) : Évaluation subjective du niveau de stress ressenti par la personne, de 1 à 10.
-
-Catégorie d'IMC : La catégorie d'IMC de la personne (par exemple, insuffisance pondérale, normal, surpoids).
-
-Tension artérielle (systolique/diastolique) : La mesure de la tension artérielle de la personne, exprimée en pression systolique sur pression diastolique.
-
-Fréquence cardiaque (bpm) : La fréquence cardiaque au repos de la personne en battements par minute.
-
-Pas quotidiens : Le nombre de pas effectués par la personne par jour.
-
-Trouble du sommeil : Présence ou absence d’un trouble du sommeil chez la personne (Aucun, Insomnie, Apnée du sommeil).
-
-Détails de la colonne « Trouble du sommeil » :
-
-Aucun : La personne ne présente aucun trouble du sommeil spécifique.
-
-Insomnie : La personne éprouve des difficultés à s’endormir ou à rester endormie, ce qui entraîne un sommeil insuffisant ou de mauvaise qualité.
-
-Apnée du sommeil : La personne souffre de pauses respiratoires pendant son sommeil, ce qui perturbe ses habitudes de sommeil et peut entraîner des risques pour la santé.
-
-> L'énoncé ci-dessus peut-être retrouver sur la platforme *kaggle* à l'adresse suivante: [Sleep Health and Lifestyle Dataset](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
-
-```bash
-
-uvicorn app.main:app --reload
-
-```
+1. Création de compte utilisateur si ce dernier n'a pas encore de compte.
+2. Connection à son compte après création de compte.
+3. Affichage de l'interface utilisateur après connection.
+4. Demande de chargement d'un fichier depuis un emplacement local ou distant.
+5. Visualisation des données chargées sur l'interface utilisateur après chargement.
+6. Visualisation de l'analyse des données sur l'interface.
+7. Possibilité de passer en vue 2D ou 3D des données numérique présent dans les données chargé.
+8. Sauvegade des différentes rendu 2D ou 3D dans un emplacement local ou distant.

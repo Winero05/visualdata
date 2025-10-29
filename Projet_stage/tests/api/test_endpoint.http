@@ -1,6 +1,0 @@
-@endpoint = http://127.0.0.1:8000/v_01/reduction/pca
-
-GET {{endpoint}} HTTP/1.1
-
-# GET http://127.0.0.1:5500/Projet_stage/frontend/html/index.htmlHTTP/1.1
-# Accept: application/json

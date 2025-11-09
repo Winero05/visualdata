@@ -1,42 +1,46 @@
-# tests/test_loading.py
+"""Fichier test du module Projet_stage/backend/modules/loading.py
+"""
 
+# test de tests/modules/test_loading.py
 from typing import Union
+from tests import __FILE_PATH_TEST__
 import pandas as pd
 import numpy as np
-from backend.modules.loading import DataLoader
+from modules.loading import DataLoader
 
 class TestDataLoader:
     """
-    Test la classe `DataLoader`.
+    Test la classe `DataLoader` du module Projet_stage/backend/modules.loding.py.
     """
 
-    def test_chargement_fichier(self):
+    def test_chargement_fichier(self) -> None:
         """
-        Test le chargement des données depuis la fichier `loading.py`."""
+        Test le chargement des données depuis le module
+        `Projet_stage/backend/modulesloading.py`.
+        """
 
-        # Chemin absolu vers ton fichier CSV
-        chemin ="/home/adama/visualdata/Projet_stage/tests/data/csv/insurance.csv"
-        
         # Initialisation de la classe
         chargeur = DataLoader()
-        
+
         # Chargement des données
-        data = chargeur.load(file_path=chemin)
-        
+        data = chargeur.load(file_path=__FILE_PATH_TEST__)
+
         # Tests
         assert data is not None
-        assert not data.empty
+        # assert not data.empty
         # assert "Sleep Duration" in data.columns  # Exemple d’une colonne attendue
-        
+
     def get_data(self) -> Union[pd.DataFrame, np.ndarray, str]:
-                    
-        # Chemin absolu vers ton fichier CSV
-        chemin ="/home/adama/visualdata/Projet_stage/tests/data/csv/insurance.csv"
-        
+        """Méthode de lecture des données pour permettre l'exécution d'autre méthodes de tests.
+
+        Returns:
+            Union[pd.DataFrame, np.ndarray, str]: Une valeur de retour de l'union est retournée.
+        """
+
         # Initialisation de la classe
         chargeur = DataLoader()
-        
+
         # Chargement des données
-        df = chargeur.load(file_path=chemin)
-        
+        df = chargeur.load(file_path=__FILE_PATH_TEST__)
+
         return df

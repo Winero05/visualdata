@@ -2,10 +2,10 @@
 
 # Il faut s'assurer que les importations se présente sous la forme:
 # from modules.nom_du_module import nom_de_la_class
-from modules.loading import DataLoader
-from modules.config_db import ConfigDb
-from modules.clean_dataframe_for_json import CleanDataframeForJson
-from modules.analysis import Analyse
+from backend.modules.loading import DataLoader
+from backend.modules.config_db import ConfigDb
+from backend.modules.clean_dataframe_for_json import CleanDataframeForJson
+from backend.modules.analysis import Analyse
 # from backend.modules.save_in_data_base import SaveInDataBase
 # from backend.modules.visualisation_2D import Visualisation_2D
 # from backend.modules.visualisation_3D import Visualisation_3D
@@ -57,15 +57,15 @@ def root() -> dict[str, str]:
     return {"message": "Le serveur tourne sans problème..."}
 
 @app.get(DB_CONFIG)
-def config_db(db_config: ConfigDb.PSQL):
+def config_db(db_config: ConfigDb()):
     """Point de terminaison pour faire la configuration
     de la base de données devant contenir les données.
 
     Args:
-        db_config (ConfigDb.PSQL): db_config permetra d'avoir une configuration de la base de données.
+        db_config (ConfigDb): db_config permetra d'avoir une configuration de la base de données.
 
     Returns:
-        ConfigDb.PSQL: L'argument de la fonction est renvoyé.
+        ConfigDb: L'argument de la fonction est renvoyé.
     """
     return db_config
 

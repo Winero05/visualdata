@@ -3,15 +3,21 @@
 
 # test de tests/modules/test_loading.py
 from typing import Union
-from tests import __FILE_PATH_TEST__
+# from tests import __FILE_PATH_TEST__
 import pandas as pd
 import numpy as np
-from modules.loading import DataLoader
+from pydantic.dataclasses import dataclass
+from backend.modules.loading import DataLoader
 
+@dataclass
 class TestDataLoader:
     """
     Test la classe `DataLoader` du module Projet_stage/backend/modules.loding.py.
     """
+
+    ABSOLU = "C:\\Users\\adama\\AllCodeProjets\\visualdata"
+    PATH = "\\Projet_stage\\backend\\tests\\data\\csv\\insurance.csv"
+    __FILE_PATH_TEST__ = ABSOLU+PATH
 
     def test_chargement_fichier(self) -> None:
         """
@@ -20,10 +26,10 @@ class TestDataLoader:
         """
 
         # Initialisation de la classe
-        chargeur = DataLoader()
+        chargeur = DataLoader(df=None, format=None)
 
         # Chargement des données
-        data = chargeur.load(file_path=__FILE_PATH_TEST__)
+        data = chargeur.load(file_path=self.__FILE_PATH_TEST__)
 
         # Tests
         assert data is not None
@@ -38,9 +44,9 @@ class TestDataLoader:
         """
 
         # Initialisation de la classe
-        chargeur = DataLoader()
+        chargeur = DataLoader(df=None, format=None)
 
         # Chargement des données
-        df = chargeur.load(file_path=__FILE_PATH_TEST__)
+        df = chargeur.load(file_path=self.__FILE_PATH_TEST__)
 
         return df

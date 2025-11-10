@@ -19,7 +19,7 @@ class:
 import psycopg
 from psycopg import sql
 from pydantic.dataclasses import dataclass
-from modules.config_db import ConfigDb
+from backend.modules.config_db import DbType, ConfigDb
 
 @dataclass
 class SaveInDataBase:
@@ -38,19 +38,19 @@ class SaveInDataBase:
 
         # Pour des raisons de sécurité:
         # Retirer tout les droits au rôle "PUBLIC" (rôle par défaut en PostgreSQL)
-        # sur le schéma "public" (schéma par défaut).
+        # sur le schéma "public" (schéma par défaut en PostgreSQL).
         revoque_public_access_on_public_sh = sql.SQL("REVOKE ALL ON SCHEMA public FROM PUBLIC;")
 
         # Créer un nouveau schéma si elle n'existe pas.
         create_sh = sql.SQL(f"CREATE SCHEMA IF NOT EXISTS {sh_name};")
 
         # Fixer l'usage du schéma pour la création des tables.
-        use_sh = sql.SQL("SET SCHEMA 'sh_ovdd';")
+        use_sh = sql.SQL(f"SET SCHEMA '{sh_name}';")
 
         # Pour des raisons de sécurité:
         # Retirer tout les droits au rôle "PUBLIC" (rôle par défaut en PostgreSQL)
-        # sur le schéma "sh_ovdd".
-        revoque_public_access_on_sh_ovdd = sql.SQL("REVOKE ALL ON SCHEMA sh_ovdd FROM PUBLIC;")
+        # sur le schéma donné par l'utilisateur "sh_name".
+        revoque_public_access_on_sh_ovdd = sql.SQL(f"REVOKE ALL ON SCHEMA {sh_name} FROM PUBLIC;")
 
         # Création d'une table du nom du fichier chargé si l'utilisateur ne précise aucun nom
         create_table = sql.SQL("CREATE TABLE IF NOT EXISTS {}.{}").format(

@@ -33,67 +33,34 @@ class:
 import os
 import json
 import sqlite3
-from typing import Union, Optional, Any
+from typing import Union, Optional
 import numpy as np
 import yaml
 import pandas as pd
 from PIL import Image
+from pydantic import ConfigDict
 from pydantic.dataclasses import dataclass
 # import pyarrow.parquet as pq
 # from pathlib import Path
-from pydantic_core import core_schema
 
-
-# Étape 1 : on étend la classe DataFrame pour y ajouter le hook Pydantic
-class PydanticDataFrame(pd.DataFrame):
-    """Cette classe est destinée à permettre à pydantic de reconnaître le module pandas
-
-    Args:
-        pd (_type_): _description_
-
-    Raises:
-        TypeError: _description_
-
-    Returns:
-        _type_: _description_
-    """
-    @classmethod
-    def __get_pydantic_core_schema__(cls, source_type: Any, handler):
-        """
-        Cette méthode dit à Pydantic comment valider/sérialiser un DataFrame.
-        """
-        return core_schema.no_info_after_validator_function(
-            cls.validate_dataframe,
-            core_schema.any_schema(),  # on accepte tout type d’entrée
-            serialization=core_schema.to_string_ser_schema(),  # sérialisation basique
-        )
-
-    @classmethod
-    def validate_dataframe(cls, value, _info):
-        # Si on reçoit déjà un DataFrame, on le retourne
-        if isinstance(value, pd.DataFrame):
-            return value
-        # Si on reçoit une liste de dictionnaires, on la convertit
-        elif isinstance(value, list):
-            return pd.DataFrame(value)
-        # Sinon, on lève une erreur
-        raise TypeError(f"Cannot parse {type(value)} into DataFrame")
-
-@dataclass
+@dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class DataLoader:
     """
     Chargement des données depuis un emplacement distant ou local.
     Fichiers supportés sont : CSV, Excel, JSON, YAML, Parquet, SQL, Image, Texte.
 
     Méthodes:
-        load(file_path,
-        file_type,
-        sql_query,
-        db_path,
-        image_as_dataframe) -> Union[pd.DataFrame, np.ndarray, str]
+
+        load(
+            file_path,
+            file_type,
+            sql_query,
+            db_path,
+            image_as_dataframe
+            ) -> Union[pd.DataFrame, np.ndarray, str]
     """
-    df: PydanticDataFrame = None
-    format: str = ""
+    df: Optional[pd.DataFrame]
+    format: Optional[str]
 
     def load(
         self,

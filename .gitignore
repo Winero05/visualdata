@@ -1,22 +1,41 @@
+# À ignorer dans le répertoire `visualdata`
+__pycache__
+.mypy_cache
 .pytest_cache
+.trunk
 .vscode
-.vscode\launch.json
-.vscode\settings.json
+.vscode/launch.json
+.vscode/settings.json
 env
 img
 key
-node_modules
-notes_personnel
-notes_personnel/note.md
-notes_personnel/docker_commandes.md
-Projet_stage/env
+mypy.ini
+**/*.ini
+
+# À ignorer dans le dossier `Projet_stage`
 Projet_stage/__pycache__
 Projet_stage/.github
 Projet_stage/.pytest_cache
-Projet_stage/.vscode
-Projet_stage/src
-Projet_stage/.coverage
-Projet_stage/100%
-apprentissage_de_l_usage_de_la_methode_de_umap.ipynb
-package-lock.json
-package.json
+**/.pytest_cache
+Projet_stage/pytest.ini
+
+# À ignorer dans le dossier `Projet_stage/backend`
+Projet_stage/backend/__pycache__
+Projet_stage/backend/script
+Projet_stage\backend\script
+
+# À ignorer dans le dossier `Projet_stage/backend/modules`
+/Projet_stage/backend/modules/__pycache
+/Projet_stage/backend/modules/__pycache__/*
+
+
+# À ignorer dans le dossier `Projet_stage/backend/tests`
+Projet_stage/backend/tests/api
+
+# À ignorer dans le dossier `Projet_stage/backend/tests/modules`
+/Projet_stage/backend/tests/modules/__pycache__
+/Projet_stage/backend/tests/modules/__pycache__/*
+
+
+# Ignorer tout ce qui est cache
+/__pycache__/

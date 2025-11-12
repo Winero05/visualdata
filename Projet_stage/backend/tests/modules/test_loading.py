@@ -6,30 +6,29 @@ from typing import Union
 # from tests import __FILE_PATH_TEST__
 import pandas as pd
 import numpy as np
-from pydantic.dataclasses import dataclass
-from backend.modules.loading import DataLoader
+from modules.loading import DataLoader
 
-@dataclass
 class TestDataLoader:
     """
     Test la classe `DataLoader` du module Projet_stage/backend/modules.loding.py.
     """
-
-    ABSOLU = "C:\\Users\\adama\\AllCodeProjets\\visualdata"
-    PATH = "\\Projet_stage\\backend\\tests\\data\\csv\\insurance.csv"
-    __FILE_PATH_TEST__ = ABSOLU+PATH
-
     def test_chargement_fichier(self) -> None:
         """
         Test le chargement des données depuis le module
         `Projet_stage/backend/modulesloading.py`.
         """
 
+
+        absolut = "C:\\Users\\adama\\AllCodeProjets\\visualdata"
+        path = "\\Projet_stage\\backend\\tests\\data\\csv\\insurance.csv"
+
+        __file_absolut_path__ = absolut+path
+
         # Initialisation de la classe
         chargeur = DataLoader(df=None, format=None)
 
         # Chargement des données
-        data = chargeur.load(file_path=self.__FILE_PATH_TEST__)
+        data = chargeur.load(file_path=__file_absolut_path__)
 
         # Tests
         assert data is not None
@@ -46,7 +45,12 @@ class TestDataLoader:
         # Initialisation de la classe
         chargeur = DataLoader(df=None, format=None)
 
+        absolut = "C:\\Users\\adama\\AllCodeProjets\\visualdata"
+        path = "\\Projet_stage\\backend\\tests\\data\\csv\\insurance.csv"
+
+        __file_absolut_path__ = absolut+path
+
         # Chargement des données
-        df = chargeur.load(file_path=self.__FILE_PATH_TEST__)
+        df = chargeur.load(file_path=__file_absolut_path__)
 
         return df

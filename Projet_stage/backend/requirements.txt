@@ -99,6 +99,7 @@ scikit-learn==1.7.2
 scipy==1.16.2
 seaborn==0.13.2
 sentry-sdk==2.42.0
+setuptools==80.9.0
 shellingham==1.5.4
 six==1.17.0
 sniffio==1.3.1
@@ -106,11 +107,13 @@ SQLAlchemy==2.0.44
 stack-data==0.6.3
 starlette==0.48.0
 stateless==0.6.0
+svgwrite==1.4.3
 threadpoolctl==3.6.0
 tomlkit==0.13.3
 tornado==6.5.2
 tqdm==4.67.1
 traitlets==5.14.3
+Tree==0.2.4
 typer==0.19.2
 typer-slim==0.20.0
 types-PyYAML==6.0.12.20250915

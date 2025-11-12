@@ -1,19 +1,64 @@
+"""Ce module permet de faire d'analyse de données.
+
+Classes:
+
+    Analyse:
+
+        Analyse de données chargées depuis un emplacement local ou distant.
+        Methodes:
+            summarize(
+                self,
+                data: Union[pd.DataFrame, np.ndarray, str] = None
+            ) -> dict:
+            Retourne un résumé statistique de la donnée chargée.
+
+            Args:
+                data (Union[pd.DataFrame,np.ndarray,str]) : Les données à résumer (par défaut c'est `None`).
+
+            Returns:
+                dict: L'ensemble des informations résumé dans un dictionnaire.
+
+            get_descriptive_stats(
+                self,
+                df: pd.DataFrame
+                ) -> pd.DataFrame:
+                Fait des statistiques descriptives pour les colonnes numériques et catégorielles.
+
+                Args:
+                    df (pd.DataFrame) : Prend les données et fourni des informations statistiques.
+
+                Returns:
+                    pd.DataFrame: Des données numériques et catégorielles traitées sont retourne.
+
+
+Raises:
+    ValueError: Une erreur de valeur est soulevée s'il n'y a pas de données à résumer.
+    TypeError: Une erreur de typage est soulevée s'il n'y a pas de données repectant les types par défaut.
+    TypeError: Une erreur de typage de données soulevée s'il n'y a pas de données tabulaire.
+
+Returns:
+    dict: Un dictionnaire de résumé est retourné avec la méthode `summarize`.
+
+    pd.DataFrame: Des données numériques et catégorielles traitées sont retourné.
+"""
+
 from typing import Union
 import pandas as pd
 import numpy as np
 
 class Analyse:
     """
-    Analyse des données chargées dans la classe `DataLoad` depuis le fichier `loading.py`.
+    Analyse de données chargées depuis un emplacement local ou distant.
     """
+
     def summarize(self, data: Union[pd.DataFrame, np.ndarray, str] = None) -> dict:
         """
         Retourne un résumé statistique de la donnée chargée.
-        
+
         Args:
-            data (pd.DataFrame | np.ndarray | str) : Les données à résumer (valeur par défaut est `None`).
-            
-        Return:
+            data (Union[pd.DataFrame,np.ndarray,str]) : Les données à résumer (par défaut c'est `None`).
+
+        Returns:
             dict: L'ensemble des informations résumé dans un dictionnaire.
         """
         if data is None:
@@ -42,21 +87,20 @@ class Analyse:
         else:
             raise TypeError("Type de données non supporté pour le résumé.")
 
-    def get_descriptive_stats(df: pd.DataFrame) -> pd.DataFrame:
+    def get_descriptive_stats(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Retourne des statistiques descriptives pour les colonnes numériques et catégorielles d'un DataFrame.
-        
+        Fait des statistiques descriptives pour les colonnes numériques et catégorielles.
+
         Args:
-            df (pd.DataFrame) : Prend un DataFrame sur lequel l'on verra des informations statistiques.
-        
-        Return:
-            pd.DataFrame: Retourne un DataFrame montrant de façon distinct les données catégorielles et numérique.
+            df (pd.DataFrame) : Prend les données et fourni des informations statistiques.
+
+        Returns:
+            pd.DataFrame: Des données numériques et catégorielles traitées sont retourne.
         """
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Les données ne sont pas tabulaires (DataFrame).")
-        
+
         numeric_stats = df.describe(include=np.number).transpose()
         categorical_stats = df.describe(include='object').transpose()
-        
+
         return pd.concat([numeric_stats, categorical_stats])
-    

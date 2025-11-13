@@ -10,7 +10,8 @@ __all__ = [
 	'SaveInDataBase',
 	'ConfigDb',
 	'Analyse',
-	'Netoyage',
+	'Nettoyage',
+	'NumericData',
 	'StringUtils',
 	'MethodeACP',
 	'MethodeTSNE',
@@ -26,6 +27,7 @@ from modules.save_in_data_base import SaveInDataBase
 from modules.config_db import ConfigDb
 from modules.analysis import Analyse
 from modules.nettoyage import  Nettoyage
+from modules.numeric_data import NumericData
 from modules.sansEspace import StringUtils
 from modules.methode_acp import  MethodeACP
 from modules.methode_tsne import  MethodeTSNE

@@ -1,4 +1,11 @@
-"""Import de bibliothèque `pandas`"""
+"""Ce module se charge de changer les cellules
+vides de type différent de `None` à `None` afin
+de permettre le formatage des dataframes en JSON.
+
+Returns:
+    pd.DataFrame: Un dataframe est retourné avec
+    les champs vide à `None`.
+"""
 
 import pandas as pd
 import numpy as np

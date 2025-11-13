@@ -10,14 +10,14 @@ env
 img
 key
 mypy.ini
-**/*.ini
+# **/*.ini
 
 # À ignorer dans le dossier `Projet_stage`
 Projet_stage/__pycache__
 Projet_stage/.github
 Projet_stage/.pytest_cache
 **/.pytest_cache
-Projet_stage/pytest.ini
+# Projet_stage/pytest.ini
 
 # À ignorer dans le dossier `Projet_stage/backend`
 Projet_stage/backend/__pycache__

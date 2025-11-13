@@ -28,7 +28,7 @@ from modules.config_db import ConfigDb
 from modules.analysis import Analyse
 from modules.nettoyage import  Nettoyage
 from modules.numeric_data import NumericData
-from modules.sansEspace import StringUtils
+from modules.sans_espace import StringUtils
 from modules.methode_acp import  MethodeACP
 from modules.methode_tsne import  MethodeTSNE
 from modules.methode_umap import  MethodeUMAP

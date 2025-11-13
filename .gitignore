@@ -30,7 +30,7 @@ Projet_stage\backend\script
 
 
 # À ignorer dans le dossier `Projet_stage/backend/tests`
-Projet_stage/backend/tests/
+# Projet_stage/backend/tests/
 
 # À ignorer dans le dossier `Projet_stage/backend/tests/api`
 Projet_stage/backend/tests/api

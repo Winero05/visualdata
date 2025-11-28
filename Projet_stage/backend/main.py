@@ -2,13 +2,21 @@
 
 # Il faut s'assurer que les importations se présente sous la forme:
 # from modules.nom_du_module import nom_de_la_class
-from backend.modules.loading import DataLoader
-from backend.modules.config_db import ConfigDb
-from backend.modules.clean_dataframe_for_json import CleanDataframeForJson
-from backend.modules.analysis import Analyse
-# from backend.modules.save_in_data_base import SaveInDataBase
-# from backend.modules.visualisation_2D import Visualisation_2D
-# from backend.modules.visualisation_3D import Visualisation_3D
+from typing import (
+    Any,
+    # Annotated
+    )
+from modules.loading import DataLoader
+from modules.config_db import (
+    PsqlConfig,
+    # DbType,
+    # ConfigDb
+    )
+from modules.clean_dataframe_for_json import CleanDataframeForJson
+from modules.analysis import Analyse
+# from modules.save_in_data_base import SaveInDataBase
+# from modules.visualisation_2D import Visualisation_2D
+# from modules.visualisation_3D import Visualisation_3D
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse # Formateur JSON
@@ -16,7 +24,35 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 # import pandas as pd
 
-app = FastAPI()
+#---------------- FastAPI informations --------------------
+
+TITLE = "Projet d'outil de visualisation de données."
+
+SUMMARY = """Ce projet permet de faire la visualisation des données numéric
+en deux ou trois dimension en fonction du choix de l'utilisateur"""
+
+DESCRIPTIONS = """Avant toute action avec cette API, il faut faire
+la **configuration de l'emplacement des données** à lire et à visualiser.
+
+Cependant, il est possible de **choisir les données soit en local sur un disque local,
+ou bien une base de données local**(nous avons prise en compte **PostgreSQL**, 
+**MySQL** et **SQLite**) ou bien les données peuvent aussi être **choisi à distant 
+depuis un serveur**.
+
+Une fois l'emplacement des données choisi, l'utilisateur doit également **choisir où 
+conserver les données après traitement ou modification**, c'est-à-dire que les rendu 
+doivent être conservé en local ou bien sur un serveur distant."""
+
+VERSION = "0.0.1"
+
+#----------------------------------------------------------
+
+app = FastAPI(
+    title=TITLE,
+    summary=SUMMARY,
+    description=DESCRIPTIONS,
+    version=VERSION
+    )
 
 # Autoriser le frontend à accéder au backend
 app.add_middleware(
@@ -56,18 +92,28 @@ def root() -> dict[str, str]:
     """
     return {"message": "Le serveur tourne sans problème..."}
 
-@app.get(DB_CONFIG)
-def config_db(db_config: ConfigDb()):
+@app.post(
+    DB_CONFIG+"/{db_type}",
+    summary="Choix de la DB à configurer."
+    )
+def config_db(
+    # db_type: DbType,
+    db_config: PsqlConfig
+    ) -> dict[str, Any]:
     """Point de terminaison pour faire la configuration
-    de la base de données devant contenir les données.
+    d'une base de données devant contenir les données.
 
     Args:
-        db_config (ConfigDb): db_config permetra d'avoir une configuration de la base de données.
+        db_config (DbType): db_config permetra d'avoir une configuration de la base de données.
 
     Returns:
         ConfigDb: L'argument de la fonction est renvoyé.
     """
-    return db_config
+
+    return {
+        # 'db_type': db_type,
+        'db_config': db_config
+        }
 
 @app.post(ENDPOINT_FOR_DATA_1)
 def endpoint_data_1(file_path: str) -> JSONResponse:

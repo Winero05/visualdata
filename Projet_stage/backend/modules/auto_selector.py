@@ -95,8 +95,8 @@ class AutoSelector:
         n, p = _x.shape
         score_linearite = self._calculer_score_linearite(df_num)
 
-        print(f"Données : {n} échantillons, {p} variables")
-        print(f"Score de linéarité moyenne : {score_linearite:.3f}")
+        print(f"\nDonnées : {n} échantillons, {p} variables\n")
+        print(f"\nScore de linéarité moyenne : {score_linearite:.3f}\n")
 
         # Étape 1 — Choix initial heuristique
         if p <= 20 and score_linearite > 0.6:
@@ -106,7 +106,7 @@ class AutoSelector:
         else:
             methode = "umap"
 
-        print(f"Méthode initialement pressentie : {methode.upper()}")
+        print(f"\nMéthode initialement pressentie : {methode.upper()}\n")
 
         # Étape 2 — Validation par score de qualité structurelle (test rapide)
         resultats = {}
@@ -126,12 +126,12 @@ class AutoSelector:
             x_umap = MethodeUMAP(df_num).umap_reduction(nombre_de_dimension=2)
             resultats["umap"] = self._score_structure(x_umap, _x)
         except ImportError as e:
-            print(f"Erreur durant l’évaluation structurelle : {e}")
+            print(f"\nErreur durant l’évaluation structurelle : {e}\n")
 
         if resultats:
             meilleure_methode = max(resultats, key=resultats.__getitem__)
-            print(f"Scores structurels : {resultats}")
-            print(f"Méthode sélectionnée : {meilleure_methode.upper()}")
+            print(f"\nScores structurels : {resultats}\n")
+            print(f"\nMéthode sélectionnée : {meilleure_methode.upper()}\n")
             return meilleure_methode
 
         return methode

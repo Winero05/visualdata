@@ -9,40 +9,59 @@
 </head>
 <body>
     <header>
-        <h2>Outil de visualisation de données</h2>
+        <nav>
+            <div class="logo">
+                <img src="img/apple-touch-icon.png" alt="logo" srcset="">
+            </div>
+            <h2>Outil de visualisation de données</h2>
+        </nav>
     </header>
-    <main>
-        <div class="dashbord">
-            <div class="open_close_dashbord_contener">
-                <div class="open_close_dashbord_barret"></div>
-                <div class="open_close_dashbord_barret"></div>
-                <div class="open_close_dashbord_barret"></div>
+    <main id="main_index_html">
+        <div id="dashboard">
+            <div id="open_dashboard_contener">
+                <div class="barret"></div>
+                <div class="barret"></div>
+                <div class="barret"></div>
             </div>
             <div class="chargement_de_fichier_contener">
                 <button class="btn_path_file">Choisir un fichier</button>
+                <select name="reduction_methode_options" id="reduction_methode_options" aria-label="Méthodes de réduction de dimensions" disabled>
+                    <option value="">Méthode</option>
+                    <option value="pca">PCA</option>
+                    <option value="tsne">t-SNE</option>
+                    <option value="umap">UMAP</option>
+                </select>
                 <div class="box_modal">
                     <form class="myPopUp" method="GET" name="form">
                         <label for="url_or_filePath">Entrer l'URL des données ou le chemin du fichier.</label>
                         <input type="text" id="url_or_filePath" placeholder="https://url_des_donnees ou bien C:/..." name="Reçevoir une URL ou un chemin du discque local.">
                         <button type="submit" class="btn_url_or_filePath"><span>Envoyer</span></button>
                     </form>
+                    <div class="closePopUp"><span></span><span></span></div>
                 </div>
-                <select name="reduction_methode_options" id="reduction_methode_options" aria-label="Méthodes de réduction de dimensions" disabled>
-                    <option value=""></option>
-                    <option value="pca">PCA</option>
-                    <option value="tsne">t-SNE</option>
-                    <option value="umap">UMAP</option>
-                </select>
             </div>
-            <div class="visual_contener">
-                <button type="button" class="visual_2d" disabled>Visualisation 2D</button>
-                <button type="button" class="visual_3d" disabled>Visualisation 3D</button>
+            <select name="type_de_visualisation" id="type_de_visualisation">
+                <option value="">Visualisation</option>
+                <option value="v2d">2D</option>
+                <option value="v3d">3D</option>
+            </select>
+            <div class="infos_data" arial-label="Information sur les données chargées." disabled>
+                <span>Information sur les données</span>
             </div>
         </div>
-        <div class="contener">
+        <div id="contener">
             <div id="plot">
-                <div class="loading_data_icon">
+                <!-- <div class="loading_data_icon">
                     <img src="img/importation_de_fichier.png" alt="importation_de_fichier" class="icon_importation_de_fichier">
+                </div> -->
+                <div class="iframe_contener">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126922.7473918771!2d1.1927552!3d6.2193664!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x102157e27128cdf1%3A0x79be7b729fb50d3!2sNEW%20ELECTRONIC!5e0!3m2!1sfr!2stg!4v1764111282583!5m2!1sfr!2stg" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+                    <!-- <iframe src="C:/Users/adama/AllCodeProjets/visualdata/Projet_stage/backend/tests/output/html/3D/Reduction_ACP_3D.html" name="zone d'affichage des vue graphiques." frameborder="0" sandbox="allow-forms allow-same-origin"></iframe> -->
+
+                    <!-- <iframe src="file:///C:/Users/adama/Downloads/plotly_graph.html" name="zone d'affichage des vue graphiques." frameborder="0" target="_black"></iframe> -->
+
+                    <!-- <iframe src="http://127.0.0.1:5500/Projet_stage/backend/tests/output/img/2D/Reduction_ACP_2D.png" frameborder="0" target="_black"></iframe> -->
                 </div>
             </div>
             <div class="resumer_des_donnees">

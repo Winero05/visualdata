@@ -1,5 +1,8 @@
 :root {
-    --my_background_color: darkslategray;
+    --width-dashboard: calc(100% / 5);
+    --width-dashboard-reduit: calc(100% / 30);
+    --tw-bg-opacity: 1;
+    --my_background_color: rgb(31 41 55/var(--tw-bg-opacity));
 }
 * {
     padding: 0;
@@ -8,14 +11,50 @@
 }
 
 header {
-    padding: 1em 0 1em;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
+    height: 4em;
+    margin-bottom: 2px;
     color: #ffffff;
-    justify-content: center;
+    background-color: rgb(17 24 39/var(--tw-bg-opacity));
+}
+
+nav {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    /* border: 2px solid; */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    position: relative;
+    left: 7vw;
+    width: 4em;
+    height: 100%;
+    padding: 1px 0;
+    /* background: red; */
+}
+
+.logo > img {
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
 }
 
 h2 {
+    float: right;
+    position: relative;
+    right: 30vw;
     align-self: center;
+    /* background-color: var(--my_background_color); */
 }
 
 body {
@@ -23,181 +62,99 @@ body {
 }
 
 main {
+    position: relative;
     width: 100%;
-    height: 86vh;
+    height: 88vh;
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     background-color: aquamarine;
 }
 
 button {
     border: none;
-    border-radius: 30px;
+    /* border-radius: 30px; */
 }
 
-.dashbord {
-    width: 20%;
+#dashboard {
+    position: relative;
+    padding: 0 6px;
+    left: 0;
+    display: flex;
+    width: var(--width-dashboard);
+    flex-direction: column;
     height: 100%;
+    border-right: 1px aqua solid;
     background-color: var(--my_background_color);
 }
 
-.open_close_dashbord_contener {
+#open_dashboard_contener {
     position: relative;
-    width: 20%;
-    height: 8%;
+    width: 34px;
+    height: 30px;
     display: flex;
-    float: right;
-    /* top: 3%; */
-    right: 2%;
+    top: 0.3em;
     cursor: pointer;
     align-items: center;
     border-radius: 3px;
     justify-content: space-evenly;
     flex-direction: column;
     background-color: gray;
+    align-self: self-end;
     opacity: .7;
 }
 
-.open_close_dashbord_contener:hover {
+#open_dashboard_contener:hover {
     opacity: 1;
-    transform: rotate(15);
+    /* transform: rotate(15); */
 }
 
-.open_close_dashbord_barret {
+#open_dashboard_contener>.barret:first-child {
     position: relative;
-    width: 45px;
-    height: 20%;
-    border-radius: 5px;
+    top: 5px;
+    rotate: 4 0 4 63deg;
+    border: 1px solid aliceblue;
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#open_dashboard_contener>.barret:nth-child(2) {
+    display: none;
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#open_dashboard_contener>.barret:last-child {
+    position: relative;
+    top: -6.1px;
+    left: 1px;
+    rotate: 4 0 5 -56deg;
+    border: 1px solid aliceblue;
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.barret {
+    position: relative;
+    width: 2em;
+    height: 0.1em;
+    /* border-radius: 5px; */
     background-color: white;
 }
 
-.visual_contener {
-    position: relative;
-    top: 15em;
-    width: 100%;
-    height: 30%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    /* background-color: aliceblue; */
-    opacity: .7;
+.open_dashboard {
+    /* width: var(--width-dashboard); */
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.visual_2d,
-.visual_3d {
-    width: 100%;
-    height: 30%;
-    font-size: larger;
-    font-weight: 700;
-    cursor: not-allowed;
-    background-color: aqua;
-}
-
-.visual_2d::before:hover,
-.visual_3d::before:hover {
-    content: "Veuillez charger les données à visualiser.";
-}
-
-.contener {
-    width: 80%;
-    display: flex;
-    /* justify-content: space-around; */
-    align-items: center;
-    flex-direction: column;
-    background-color: var(--my_background_color);
-}
-
-#plot {
-position: relative;
-    width: 95%;
-    height: 400px;
-    overflow: scroll;
-    align-self: center;
-    border-radius: 8px;
-    display: flex;
-    background-color: cadetblue;
-    /* text-align: center; */
-    /* border: 2px solid #ccc;
-    justify-content: center;
-    align-items: center; */
-}
-
-.loading_data_icon {
-    width: 100%;
-    height: 100%;
-    display: inline-flex;
-    justify-content: space-evenly;
-    align-items: center;
-    border-radius: 5px;
-    /* border-style: dashed; */
-    /* background-color: aquamarine; */
-    content: "Veuillez glisser déposé un fichier d\'extension (.csv, .json, .text, .sql, .jpeg, .png)";
-}
-
-.loading_data_icon > div{
-    position: relative;
-    border-radius: 5px;
-    width: 10%;
-    height: 20%;
-    display: flex;
-    align-items: center;
-    border-style: dashed;
-    justify-content: center;
-}
-
-.icon_importation_de_fichier {
-    position: relative;
-    width: 10em;
-    height: 10em;
-    cursor: pointer;
-}
-
-/* .icon_importation_de_fichier::after {
-    color: whitesmoke;
-    content: ".csv, .json, .txt, .sql, . jpg, jpeg";
-    display: flex;
-    width: 4em;
-    height: 3em;
-    background-color: crimson;
-} */
-
-table {
-    position: relative;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-th,
-td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-    /* text-align: center; */
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-.chargement_de_fichier_contener {
-    display: flex;
-    position: relative;
-    top: 5em;
-    height: 3em;
-    width: 100%;
-    flex-direction: column;
-    justify-content: space-between;
+.close_dashboard {
+    /* width: var(--width-dashboard-reduit); */
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn_path_file {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font: bolder larger normal;
-    cursor: pointer;
-    border-radius: 25px;
-    background-color: aqua;
+    opacity: .9;
+}
+
+.btn_path_file:hover {
+    opacity: 1;
 }
 
 .box_modal {
@@ -207,10 +164,37 @@ th {
     width: 100vw;
     height: 100vh;
     display: none;
-    z-index: 9999;
+    z-index: 1;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.8);
+}
+
+.closePopUp {
+    position: relative;
+    top: -136px;
+    left: -15px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid aliceblue;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.closePopUp>span:first-child {
+    rotate: 0 0 1 50deg;
+    border: 1px solid aliceblue;
+    position: relative;
+    top: 7px;
+}
+
+.closePopUp>span:last-child {
+    rotate: 0 0 1 -50deg;
+    border: 1px solid aliceblue;
+    position: relative;
+    top: -7px;
 }
 
 .myPopUp {
@@ -218,6 +202,7 @@ th {
     height: 45%;
     display: flex;
     flex-wrap: wrap;
+    z-index: 2;
     color: #ffffff;
     border-radius: 40px;
     align-items: end;
@@ -272,15 +257,178 @@ th {
 }
 
 #reduction_methode_options {
+    height: 2em;
+    width: 100%;
+    display: flex;
+    background-color: aqua;
+    text-align: center;
+    font: bolder larger normal;
+    border: none;
+    opacity: .7;
     cursor: not-allowed;
 }
 
-.resumer_des_donnees {
-    width: 95%;
-    height: 30%;
+#type_de_visualisation {
+    height: 2em;
+    width: 100%;
+    display: flex;
+    background-color: aqua;
+    text-align: center;
+    font: bolder larger normal;
+    border: none;
+    opacity: .7;
+    cursor: not-allowed;
+}
+
+#type_de_visualisation:focus {
+    border: none;
+}
+
+.infos_data {
+    height: 2em;
+    width: 100%;
+    display: flex;
+    background-color: aqua;
+    text-align: center;
+    font: bolder larger normal;
+    align-items: center;
+    opacity: .7;
+    margin: 3px 0;
+    justify-content: center;
+}
+
+.infos_data:hover {
+    cursor: not-allowed;
+}
+
+#contener {
+    display: flex;
+    position: relative;
+    float: right;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    flex-direction: column;
+    background-color: var(--my_background_color);
+    transition: all 1s .1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#plot {
+    position: relative;
+    width: 99.6%;
+    height: 60vh;
+    overflow: auto;
+    align-self: center;
+    border-radius: 3px;
+    display: flex;
+    /* background-color: cadetblue; */
+    /* text-align: center; */
+    border: 1px solid aqua;
+    justify-content: center;
+    align-items: center;
+    }
+
+.loading_data_icon {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 5px;
+    /* border-style: dashed; */
+    /* background-color: aquamarine; */
+    content: "Veuillez glisser déposé un fichier d\'extension (.csv, .json, .text, .sql, .jpeg, .png)";
+}
+
+.loading_data_icon > div{
+    position: relative;
+    border-radius: 5px;
+    width: 10%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    border-style: dashed;
+    justify-content: center;
+}
+
+.icon_importation_de_fichier {
+    position: relative;
+    width: 4.5em;
+    height: 5em;
+    cursor: pointer;
+}
+
+.iframe_contener {
+    width: 100%;
+    height: 100%;
+    /* border: 2px solid red; */
+}
+
+/* .icon_importation_de_fichier::after {
+    color: whitesmoke;
+    content: ".csv, .json, .txt, .sql, . jpg, jpeg";
+    display: flex;
+    width: 4em;
+    height: 3em;
+    background-color: crimson;
+} */
+
+table {
+    position: relative;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    /* text-align: center; */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.chargement_de_fichier_contener {
+    display: flex;
+    position: relative;
+    /* top: 1em; */
     margin-top: 1em;
+    height: 5em;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    /* background: red; */
+}
+
+.btn_path_file {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: bolder larger normal;
+    cursor: pointer;
+    /* border-radius: 25px; */
+    height: 50%;
+    background-color: aqua;
+    margin: 3px 0;
+}
+
+#reduction_methode_options {
+    height: 50%;
+    cursor: not-allowed;
+    margin-bottom: 3px;
+}
+
+.resumer_des_donnees {
+    width: 99.6%;
+    height: 30%;
+    /* margin-top: 1em; */
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    background-color: #ccc;
+    background-color: var(--my_background_color);
+    border: 1px aqua solid;
 }

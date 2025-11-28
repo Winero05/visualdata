@@ -59,8 +59,10 @@ class DataLoader:
             image_as_dataframe
             ) -> Union[pd.DataFrame, np.ndarray, str]
     """
-    df: Optional[pd.DataFrame]
-    format: Optional[str]
+    # Veuillez mettre cette variable à "None" lors de l'initialisation de la classe.
+    df: Optional[pd.DataFrame] = None
+    # Veuillez mettre cette variable à "None" lors de l'initialisation de la classe.
+    format: Optional[str] = None
 
     def load(
         self,

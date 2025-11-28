@@ -21,9 +21,13 @@ __all__ = [
 	'Visualisation_3D'
 ]
 
+# Les modules/classes devant intervenir dans l'API
 from modules.loading import DataLoader
-from modules.clean_dataframe_for_json import CleanDataframeForJson
 from modules.save_in_data_base import SaveInDataBase
+
+# Les modules/classes qui le bon fonctionnement des autres modules/classes.
+from modules.string_tool import StringTools
+from modules.clean_dataframe_for_json import CleanDataframeForJson
 from modules.config_db import ConfigDb
 from modules.analysis import Analyse
 from modules.nettoyage import  Nettoyage

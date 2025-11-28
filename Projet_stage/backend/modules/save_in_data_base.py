@@ -19,7 +19,7 @@ class:
 import psycopg
 from psycopg import sql
 from pydantic.dataclasses import dataclass
-from backend.modules.config_db import DbType, ConfigDb
+from modules.config_db import DbType, ConfigDb
 
 @dataclass
 class SaveInDataBase:
@@ -28,7 +28,14 @@ class SaveInDataBase:
     PostgreSQL est le choix par défaut.
     """
 
-    def creat_table_psql(self, sh_name: str, file_name: str) -> list[sql.SQL | sql.Composed]:
+    dbtype: DbType
+
+    def creat_table_psql(
+        self,
+        dbname: str,
+        sh_name: str,
+        file_name: str
+        ) -> list[sql.SQL | sql.Composed]:
         """Cette méthode se charge de créer une table en PostgreSQL.
 
         Returns:
@@ -49,12 +56,12 @@ class SaveInDataBase:
 
         # Pour des raisons de sécurité:
         # Retirer tout les droits au rôle "PUBLIC" (rôle par défaut en PostgreSQL)
-        # sur le schéma donné par l'utilisateur "sh_name".
+        # sur le schéma crée ("sh_name").
         revoque_public_access_on_sh_ovdd = sql.SQL(f"REVOKE ALL ON SCHEMA {sh_name} FROM PUBLIC;")
 
         # Création d'une table du nom du fichier chargé si l'utilisateur ne précise aucun nom
         create_table = sql.SQL("CREATE TABLE IF NOT EXISTS {}.{}").format(
-            sql.Identifier(sh_name, file_name)
+            sql.Identifier(dbname, sh_name, file_name)
         )
 
         return [

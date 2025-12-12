@@ -6,14 +6,40 @@
     <title>Outil de visualisation</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Lineicon CSS -->
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Google font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">
-                <img src="img/apple-touch-icon.png" alt="logo" srcset="">
+                <a href="welcome.html">
+                    <img src="img/apple-touch-icon.png" alt="logo" srcset="">
+                </a>
             </div>
-            <h2>Outil de visualisation de données</h2>
+            <h1>Outil de visualisation de données</h1>
+            <div class="compte-box">
+                <!-- thin style -->
+                <i class="fa-thin fa-user"></i>
+                <!-- <i class="fa-regular fa-user"></i> -->
+                <!-- <i style='font-size:24px' class='fas'>&#xf2bd;</i> -->
+                <!-- <i class="lni lni-user-4"></i> -->
+                <!-- <ul class="compte-info">
+                    <li class="items">Profile</li>
+                    <li class="items">Paramètres</li>
+                    <li class="items">Thème</li>
+                    <li class="items">Historique</li>
+                    <li class="items">Notifications</li>
+                    <li class="items">Documentation</li>
+                    <li class="items">Se déconnecter</li>
+                    <li class="items">Quitter</li>
+                </ul> -->
+            </div>
         </nav>
     </header>
     <main id="main_index_html">
@@ -24,46 +50,123 @@
                 <div class="barret"></div>
             </div>
             <div class="chargement_de_fichier_contener">
-                <button class="btn_path_file">Choisir un fichier</button>
-                <select name="reduction_methode_options" id="reduction_methode_options" aria-label="Méthodes de réduction de dimensions" disabled>
-                    <option value="">Méthode</option>
-                    <option value="pca">PCA</option>
-                    <option value="tsne">t-SNE</option>
-                    <option value="umap">UMAP</option>
-                </select>
+                <button class="btn_path_file">
+                    <span>Choisir un fichier</span>
+                </button>
                 <div class="box_modal">
-                    <form class="myPopUp" method="GET" name="form">
-                        <label for="url_or_filePath">Entrer l'URL des données ou le chemin du fichier.</label>
-                        <input type="text" id="url_or_filePath" placeholder="https://url_des_donnees ou bien C:/..." name="Reçevoir une URL ou un chemin du discque local.">
-                        <button type="submit" class="btn_url_or_filePath"><span>Envoyer</span></button>
+                    <form class="myPopUp" method="get" name="form">
+                        <div class="close-modal-box">
+                            <div class="closePopUp">
+                                <i class="material-icons">&#xe5cd;</i>
+                            </div>
+                        </div>
+                        <div class="label-and-data-path-input">
+                            <label for="url_or_filePath">Entrer l'URL des données ou le chemin du fichier</label>
+                            <input
+                            type="text"
+                            id="url_or_filePath"
+                            placeholder="https://url_des_donnees ou bien C:/..."
+                            name="Reçevoir une URL ou un chemin du discque local."
+                            autofocus>
+                        </div>
+                        <div class="submition-btn">
+                            <input type="submit" class="btn_url_or_filePath" value="Envoyer">
+                            <input type="reset" value="Annuler">
+                        </div>
                     </form>
-                    <div class="closePopUp"><span></span><span></span></div>
                 </div>
             </div>
             <select name="type_de_visualisation" id="type_de_visualisation">
-                <option value="">Visualisation</option>
-                <option value="v2d">2D</option>
-                <option value="v3d">3D</option>
+                <option value="">
+                    <span>Visualisation</span>
+                </option>
+                <option value="v2d">
+                    <span>2D</span>
+                </option>
+                <option value="v3d">
+                    <span>3D</span>
+                </option>
+                <option value="all">Tous</option>
             </select>
+            <div class="visualisation-box-modal">
+                <form class="form-visualisation" method="get" name="form">
+                    <div class="close-modal-box">
+                        <div class="visuale-closePopUp">
+                            <i class="material-icons">&#xe5cd;</i>
+                        </div>
+                    </div>
+                    <div class="label-and-data-path-input">
+                        <label for="filePath">Où stocker les figures graphiques ?</label>
+                        <input
+                        type="text"
+                        id="filePath"
+                        placeholder="C:/..."
+                        name="Reçevoir un chemin du discque local."
+                        autofocus>
+                    </div>
+                    <div class="submition-btn">
+                        <input type="submit" class="btn_url_or_filePath" value="Envoyer">
+                        <input type="reset" value="Annuler">
+                    </div>
+                </form>
+            </div>
             <div class="infos_data" arial-label="Information sur les données chargées." disabled>
-                <span>Information sur les données</span>
+                <div class="info-msg">
+                    <span>
+                        Informations
+                    </span>
+                </div>
+                <ul class="info-items">
+                    <li class="items-1">
+                        Taille
+                        <span></span>
+                    </li>
+                    <li class="items-2">
+                        Colonnes
+                        <span></span>
+                    </li>
+                    <li class="items-3">
+                        Valeur dupliqué
+                        <span></span>
+                    </li>
+                    <li class="items-3">
+                        Valeur manquante
+                        <span></span>
+                    </li>
+                    <li class="items-4">
+                        Types des colonne
+                        <span></span>
+                    </li>
+                </ul>
+                <div class="info-items-icon">
+                    <svg id="up-icon-svg" viewBox="0 0 450 450">
+                        <polyline
+                        points="14,441 228,0 438,447"
+                        fill="none"                        />
+                    </svg>
+                </div>
             </div>
         </div>
         <div id="contener">
             <div id="plot">
+                <div class="charge-data-message">
+                    <span>Veuillez charger un fichier</span>
+                </div>
                 <!-- <div class="loading_data_icon">
                     <img src="img/importation_de_fichier.png" alt="importation_de_fichier" class="icon_importation_de_fichier">
                 </div> -->
                 <div class="iframe_contener">
-                    <iframe
-                    src="http://127.0.0.1:5500/Projet_stage/backend/tests/output/html/3D/Reduction_ACP_3D.html"
+                    <!-- <iframe
+                    src="http://127.0.0.1:5501/Projet_stage/backend/tests/output/html/3D/Reduction_ACP_3D.html"
                     name="zone d'affichage des vue graphiques." frameborder="0"
                     style="width: 100%; height: 100%; border: 0;"
                     sandbox="allow-scripts allow-forms allow-same-origin"
-                    ></iframe>
+                    ></iframe> -->
                 </div>
             </div>
             <div class="resumer_des_donnees">
+                <div class="all-infos-on-data"></div>-data
+                <div class="single-info-on-data"></div>-data
             </div>
         </div>
     </main>

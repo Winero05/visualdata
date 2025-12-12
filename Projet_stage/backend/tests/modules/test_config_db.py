@@ -5,7 +5,7 @@
 
 from typing import Generator
 import pytest
-from modules.config_db import (
+from cfg.config_db import (
     PsqlConfig,
     SqlitConfig,
     MysqlConfig,

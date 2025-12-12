@@ -23,12 +23,12 @@ __all__ = [
 
 # Les modules/classes devant intervenir dans l'API
 from modules.loading import DataLoader
-from modules.save_in_data_base import SaveInDataBase
+from modules.save_in_db import SaveInDataBase
 
 # Les modules/classes qui le bon fonctionnement des autres modules/classes.
 from modules.string_tool import StringTools
 from modules.clean_dataframe_for_json import CleanDataframeForJson
-from modules.config_db import ConfigDb
+from cfg.config_db import ConfigDb
 from modules.analysis import Analyse
 from modules.nettoyage import  Nettoyage
 from modules.numeric_data import NumericData

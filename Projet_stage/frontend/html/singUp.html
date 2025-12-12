@@ -3,9 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S'enrégistrer</title>
-</head>
+    <title>Créer un compte</title>
+    <link rel="stylesheet" href="css/singUp.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    </head>
 <body>
-    
+    <main class="singup_main">
+        <form class="form_container" action="config_db.html">
+            <div class="singUp">
+                <span>S'enrégistrer</span>
+            </div>
+            <div class="nom box">
+                <input type="text" name="Nom utilisateur" id="nom" required>
+                <label for="nom" class="label">Nom</label>
+                <i class="bx bx-user icon"></i>
+            </div>
+            <div class="prenom box">
+                <input type="text" name="Prenom utilisateur" id="prenom" required>
+                <label for="prenom" class="label">Prénom</label>
+                <i class="bx bx-user icon"></i>
+            </div>
+            <div class="email box">
+                <input type="email" name="Email utilisateur" id="email" required>
+                <label for="email" class="label">Email</label>
+                <i class='bx bx-envelope icon'></i>
+            <div class="password box">
+                <input type="password" name="user password" id="password" required>
+                <label for="password" class="label">Mot de passe</label>
+                <i class="bx bx-lock-alt icon"></i>
+            </div>
+            <div class="submit box">
+                <button type="submit">S'enrégistrer</button>
+            </div>
+            <div class="compte-existant box">
+                <span>Vous avez déjà de compte ?  <a href="login.html">Se connecter</a> </span>
+            </div>
+        </form>
+    </main>
 </body>
 </html>

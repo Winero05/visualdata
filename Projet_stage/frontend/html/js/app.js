@@ -1,3 +1,5 @@
+// document.querySelector("html").classList.add("js");
+
 const main_index_html = document.getElementById("main_index_html");
 
 const dashboard = document.getElementById("dashboard");
@@ -6,23 +8,43 @@ const open_dashboard_contener = document.getElementById("open_dashboard_contener
 
 const chargement_de_fichier_contener = document.getElementsByClassName("chargement_de_fichier_contener")[0];
 
+const closePopUp = document.getElementsByClassName("closePopUp")[0];
+
+const visuale_closePopUp = document.getElementsByClassName("visuale-closePopUp")[0];
+
 const box_modal = document.getElementsByClassName("box_modal")[0];
 
 const myPopUp = document.getElementsByClassName("myPopUp")[0];
 
-const closePopUp = document.getElementsByClassName("closePopUp")[0];
+const visualisation_box_modal = document.getElementsByClassName("visualisation-box-modal")[0];
+
+const url_or_filePath = document.getElementById("url_or_filePath");
+
+const filePath = document.getElementById("filePath");
 
 const type_de_visualisation = document.getElementById("type_de_visualisation");
 
 const infos_data = document.getElementsByClassName("infos_data")[0];
 
+const infos_msg = document.getElementsByClassName("info-msg")[0];
+
+const info_items = document.getElementsByClassName("info-items")[0];
+
+const info_items_icon = document.getElementsByClassName("info-items-icon")[0];
+
+const up_icon_svg = document.getElementById("up-icon-svg");
+
 const contener = document.getElementById("contener");
 
-const endpoint = "http://127.0.0.1:8000/v_01/reduction";
+const resumer_des_donnees = document.getElementsByClassName("resumer_des_donnees")[0];
 
-const endpoint_data_loading = "http://127.0.0.1:8000/v_01/data_1";
+const all_infos_on_data = document.getElementsByClassName("all-infos-on-data")[0];
 
-headers = { "accept": "application/json" };
+const single_info_on_data = document.getElementsByClassName("single-info-on-data")[0];
+
+const charge_data_message = document.getElementsByClassName("charge-data-message")[0];
+
+const iframe_contener = document.getElementsByClassName("iframe_contener")[0];
 
 const btn_path_file = document.getElementsByClassName("btn_path_file")[0];
 
@@ -38,9 +60,7 @@ const visual_2d = document.getElementsByClassName("visual_2d");
 
 const visual_3d = document.getElementsByClassName("visual_3d");
 
-const lecteur = new FileReader();
-
-// ------------------------------ open_close_dashbord_contener ---------------------------------
+// --------------------- open_close_dashbord_contener ----------------
 
 let close_dashboard = true;
 
@@ -54,6 +74,7 @@ open_dashboard_contener.addEventListener("click", (event) => {
         dashboard.style.width = "var(--width-dashboard-reduit)";
         chargement_de_fichier_contener.style.display = "none";
         type_de_visualisation.style.display = "none";
+        infos_data.style.display = "none";
         infos_data.style.display = "none";
         contener.style.width="96.6%";
         open_dashboard_contener.children[0].style.top="0";
@@ -71,6 +92,7 @@ open_dashboard_contener.addEventListener("click", (event) => {
         chargement_de_fichier_contener.style.display="flex";
         type_de_visualisation.style.display="flex";
         infos_data.style.display="flex";
+        infos_data.style.display="flex";
         contener.style.width="80%";
         open_dashboard_contener.children[0].style.top="5px";
         open_dashboard_contener.children[0].style.rotate="4 0 4 63deg";
@@ -81,134 +103,301 @@ open_dashboard_contener.addEventListener("click", (event) => {
         close_dashboard = true;
     }
 });
+// ---------------------------------------------------------------------------------------------
+
+// ----------------- AFFICHAGE DE BOX_MODAL ---------------------
+
+closePopUp.addEventListener("click", () => {
+    box_modal.style.display = "none";
+});
+
+visuale_closePopUp.addEventListener("click", () => {
+    visualisation_box_modal.style.display = "none";
+});
+
+btn_path_file.addEventListener("click", () => {
+    box_modal.style.display = "flex";
+});
+
+charge_data_message.addEventListener("click", () => {
+    box_modal.style.display = "flex";
+});
+
+// Interaction avec l'API
+const data_loading = "http://127.0.0.1:8000/v_01/data/";
+
+const data_analysis = "http://127.0.0.1:8000/v_01/analyse/";
+
+const visualisation2d = "http://127.0.0.1:8000/v_01/visualisation_2d/";
+
+const visualisation3d = "http://127.0.0.1:8000/v_01/visualisation_3d/";
+
+const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+};
+
+// -------------------------------------------------------------------
+
+const lecteur = new FileReader();
+
+function afficherCSVDepuisObjet(dataArray) {
+    const table = document.createElement("table");
+
+    // Création de l'en-tête
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    const colonnes = Object.keys(dataArray[0]);
+    colonnes.forEach((col) => {
+        const th = document.createElement("th");
+        th.textContent = col;
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Corps du tableau
+    const tbody = document.createElement("tbody");
+
+    dataArray.forEach((rowData) => {
+        const tr = document.createElement("tr");
+        colonnes.forEach((col) => {
+            const td = document.createElement("td");
+            td.textContent = rowData[col];
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    // Affichage
+    plot.innerHTML = "";
+    plot.appendChild(table);
+}
+
+function afficherResumeDansTableau(resume) {
+    resumer_des_donnees.innerHTML = "";
+
+    const table = document.createElement("table");
+
+    const tbody = document.createElement("tbody");
+
+    let index = 0;
+    for (const key in resume) {
+        const tr = document.createElement("tr");
+
+        const tdKey = document.createElement("td");
+        tdKey.textContent = key;
+
+        const tdValue = document.createElement("td");
+        tdValue.textContent = JSON.stringify(resume[key], null, 2);
+
+        info_items.children[index].children[0].textContent = resume[key].length;
+
+        if (resume[key].length)
+            info_items.children[index].children[0].textContent = resume[key].length;
+        else if(typeof resume[key] === "number")
+            info_items.children[index].children[0].textContent = resume[key];
+        else
+            info_items.children[index].children[0].textContent = Object.keys(resume[key]).length;
+
+        tr.appendChild(tdKey);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+        index += 1;
+    }
+
+    table.appendChild(tbody);
+    resumer_des_donnees.appendChild(table);
+}
+
+function afficherGraphique2D(graphique) {
+    
+}
 
 // ---------------------------------------------------------------------------------------------
 
-// ------------------------------ box_modal ---------------------------------
+function readLoadedData() {
+    fetch(data_loading, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erreur HTTP " + response.status);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        // Affichage dans le HTML
+        afficherCSVDepuisObjet(data);
+    })
+    .catch((err) => console.error("Erreur GET /data :", err));
+}
 
-closePopUp.addEventListener("click", (event) => {
-    box_modal.style.display = "none";
-})
+function readDataAnalysis() {
+    fetch(data_analysis, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erreur HTTP " + response.status);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        console.log("Résumé des données : ", data);
 
-btn_path_file.addEventListener("click", () => {
-    box_modal.style.display = "flex"; 
-    // lecteur.onload = function (event) {
-    //     plot.textContent = event.target.result;
-    //     afficherCSV(event.target.result);
-    // };
-    // lecteur.readAsText(path_file.files[0]);
+        afficherResumeDansTableau(data);
+    })
+    .catch((err) => console.error("Erreur GET /analyse :", err));
+}
+
+function readVisualization_2d() {
+    fetch(visualisation2d, {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erreur HTTP " + response.status);
+        }
+        return response.json();
+    })    
+}
+
+myPopUp.addEventListener('submit', (event) => {
+    event.preventDefault();
+    fetch(data_loading, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+            file_path: url_or_filePath.value
+        })
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    }).then((data) => {
+        console.log("Création OK");
+        
+        // Lire les données
+        readLoadedData();
+        
+        // Lire l’analyse
+        readDataAnalysis();
+        event.stopPropagation();
+    }).catch(console.error);
+    infos_data.removeAttribute("disabled");
     infos_data.style.cursor = "pointer";
     infos_data.style.opacity = "1";
-    infos_data.removeAttribute("disabled");
-    // visual_contener[0].style.opacity = "1";
-    reduction_methode_options.removeAttribute("disabled");
-    // visual_2d[0].removeAttribute("disabled");
-    // visual_3d[0].removeAttribute("disabled");
-    reduction_methode_options.style.cursor = "pointer";
-    // visual_2d[0].style.cursor = "pointer";
-    // visual_3d[0].style.cursor = "pointer";
-    reduction_methode_options.addEventListener('click', (event) => {
-        console.log(event.target.value);
-    })
-})
+    info_items.style.display = "flex";
+    info_items.style.width = "100%";
+    info_items.style.flexDirection = "column";
+});
 
-// ---------------------------------------------------------------------------
+// ---------------- VISUALISATION -----------------------
 
-// ------------------------------ infos_data ---------------------------------
+type_de_visualisation.addEventListener("click", () => {
+    visualisation_box_modal.style.display = "flex";
+});
 
-infos_data.addEventListener("click", (event) => {
+visualisation_box_modal.addEventListener("submit", (event) => {
+    event.preventDefault();
+    console.log(filePath.value);
+    fetch(visualisation2d, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+            file_path: filePath.value,
+        })
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    }).then(() => {
+        console.log("Création OK");
+
+        // Lire la visualisation 2D
+        readVisualization_2d();
+
+        event.stopPropagation();
+    }).catch(console.error);
+
+});
+
+// ----------- INFORMATIONS DES DONNEES CHARGEES ---------------
+
+infos_msg.addEventListener("click", () => {
     const resumer_des_donnees = contener.children[1].classList[0];
     if (resumer_des_donnees === "resumer_des_donnees") {
         contener.children[1].removeAttribute("class");
         contener.children[0].style.height = "88vh";
     } else {
         contener.children[1].classList.toggle("resumer_des_donnees");
-        contener.children[0].style.height = "61vh"
+        contener.children[0].style.height = "61vh";
     }
 });
 
-// ---------------------------------------------------------------------------------------------
+let toggle = 1;
 
-function afficherCSV(csvText) {
-    const lignes = csvText.trim().split("\n");
-    const tableau = document.createElement("table");
-
-    lignes.forEach((ligne, index) => {
-    const ligneHTML = document.createElement("tr");
-    const cellules = ligne.split(",");
-
-    cellules.forEach((cellule) => {
-        const celluleHTML = document.createElement(index === 0 ? "th" : "td");
-        celluleHTML.textContent = cellule.trim();
-        ligneHTML.appendChild(celluleHTML);
-    });
-
-    tableau.appendChild(ligneHTML);
-    });
-
-    plot.innerHTML = ""; // Nettoyer si on recharge un fichier
-    plot.appendChild(tableau);
-}
-
-// console.log(myPopUp[0]);
-
-if (!myPopUp) {
-    console.warn("Element with class 'myPopUp' not found.");
-} else {
-    myPopUp.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const url_or_filePath = event.target[0].value;
-        const ishttp = url_or_filePath.split(":")[0]
-        if ((ishttp === "http") || (ishttp+"s" === "https")) {
-            fetch(url_or_filePath)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    console.log(response.blob());
-                    return response.blob();
-            })
-        } else {
-            console.log("Le chemin entré est différent des options proposées.");
-            url_or_filePath = "http://127.0.0.1:8000/" + url_or_filePath + ":path";
-            fetch(url_or_filePath)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                console.log(response.blob());
-                return response.blob();
-        })
-        }
-        // console.log(http)
-        // console.log(url_or_filePath)
-    });
-}
-
-
-function afficherResumerDesDonnees(params) {
-    const resumer_des_donnees = document.getElementsByClassName(
-        "resumer_des_donnees"
-    )[0];
-    const tableau = document.createElement("table");
-    const thead = document.createElement("thead");
-    const tbody = document.createElement("tbody");
-    const tr_titre = document.createElement("tr");
-    const tr_data = document.createElement("tr");
-    const celluleHTML = document.createElement("td");
-    ligneHTML.appendChild(celluleHTML); // tr(ligne) <- td(cellule)
-    thead.appendChild(ligneHTML); // thead(en-tête de tableau) <- tr
-    tbody.appendChild(ligneHTML); // tbody(corps de tableau)
-    tableau.appendChild(thead);
-    tableau.appendChild(tbody);
-    const title = ["Taille", "Valeur manquante", "Valeur dupliqué", "Types des colonne", "Colonnes"]
-    for (let index = 0; index < title.length; index++) {
-        const th = document.createElement("th");
-        const celluleHTML = document.createElement("td");
-        th.textContent = title[index] // th(cellule en-tête) <- title[index]
-        celluleHTML.textContent = 
-        tr_titre.appendChild(th); // tr(ligne) <- th(en-tête)
-        tr_data.appendChild(celluleHTML);
+info_items_icon.addEventListener("click", () => {
+    if (info_items.style.display === "none") {
+        info_items.style.display = "flex";
+        info_items.style.width = "100%";
+        info_items.style.flexDirection = "column";
+        up_icon_svg.style.rotate = "0 0 0 0deg";
+        toggle = 0;
+    } else {
+        up_icon_svg.style.rotate = "5 0 1 180deg";
+        info_items.style.display = "none";
+        toggle = 1;
     }
-    resumer_des_donnees.appendChild(tableau);
-}
+});
+
+info_items.addEventListener("click", (event) => {
+    const item = event.target.textContent.trim();
+    switch (item) {
+        case "Taille":
+            
+            break;
+    
+        case "Colonnes":
+            
+            break;
+    
+        case "Valeur dupliqué":
+            
+            break;
+    
+        case "Valeur manquante":
+            
+            break;
+    
+        case "Types des colonne":
+            
+            break;
+    
+        case "Taille":
+            
+            break;
+    
+        default:
+            break;
+    }
+    console.log(item);
+})
+
+// ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # Contenu de test_visualisation_image.py
 
-from backend.modules.visualisation_image import ImageVisualizer
+from modules.visualisation_image import ImageVisualizer
 
 class TestImageVisualizer:
     def test_show_image(self):

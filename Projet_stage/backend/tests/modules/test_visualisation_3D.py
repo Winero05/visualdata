@@ -1,7 +1,7 @@
 # Contenu de test/test_visualisation_csv_2D.py
 
-from backend.modules.visualisation_3D import Visualisation_3D
-from tests.test_numeric_data import TestNumericData
+from modules.visualisation_3D import Visualisation_3D
+from tests.modules.test_numeric_data import TestNumericData
 
 class TestVisualisation_3D:
     def test_visualisation_3D_acp(self):        

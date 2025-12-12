@@ -24,6 +24,10 @@ Projet_stage/backend/__pycache__
 Projet_stage/backend/script
 Projet_stage\backend\script
 
+# À ignorer dans le dossier `Projet_stage/backend/routers`
+Projet_stage/backend/routers:/*__.py
+Projet_stage/backend/cfg/*__.py
+
 # À ignorer dans le dossier `Projet_stage/backend/modules`
 /Projet_stage/backend/modules/__pycache
 /Projet_stage/backend/modules/__pycache__/*

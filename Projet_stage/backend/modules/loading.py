@@ -38,10 +38,25 @@ import numpy as np
 import yaml
 import pandas as pd
 from PIL import Image
-from pydantic import ConfigDict
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    )
 from pydantic.dataclasses import dataclass
+from fastapi import APIRouter
 # import pyarrow.parquet as pq
 # from pathlib import Path
+
+router = APIRouter()
+
+class FilePayload(BaseModel):
+    """Cette classe reçoi le chemin ou les données qui doivent être lu pour le chargement.
+
+    Args:
+        BaseModel (Model): Cette classe assure la sérialisation et la validation de la classe.
+    """
+
+    file_path: str
 
 @dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class DataLoader:
@@ -101,12 +116,12 @@ class DataLoader:
                 # Récupérer le suffix du chemin de données (i.e 'csv', 'json' etc).
                 self.format = file_path.split(".")[-1]
 
-                # Définir les différents séparateur possible qui peuvent être présent dans un fichier
-                # de données.
+                # Définir les différents séparateur possible qui peuvent être présent
+                # dans un fichier de données.
                 sepateur_valeurs = [";", "|", "\t", ","]
 
-                # Mettre dans `seperate_valeurs` l'emplacement du séparateur utilisé dans le fichier chargé
-                # et le stocké dans une variable `index_sepateur`.
+                # Détecter dans `seperate_valeurs` l'emplacement du séparateur utilisé
+                # dans le fichier chargé et le stocké dans une variable `index_sepateur`.
                 index_sepateur = 0
 
                 # Lire la première ligne des données chargées pour connaître la nature du séparteur

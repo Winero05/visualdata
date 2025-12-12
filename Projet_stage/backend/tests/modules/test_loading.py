@@ -18,7 +18,7 @@ class TestDataLoader:
         `Projet_stage/backend/modulesloading.py`.
         """
 
-
+        # Veuillez modifier les deux variables suivante.
         absolut = "C:\\Users\\adama\\AllCodeProjets\\visualdata"
         path = "\\Projet_stage\\backend\\tests\\data\\csv\\insurance.csv"
 

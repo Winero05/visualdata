@@ -70,7 +70,7 @@ class Analyse:
                 'columns': list(data.columns),
                 'types': data.dtypes.astype(str).to_dict(),
                 'missing_values': data.isnull().sum().to_dict(),
-                'duplicates': data.duplicated().sum()
+                'duplicates': int(data.duplicated().sum())
             }
         elif isinstance(data, np.ndarray):
             return {
@@ -82,7 +82,7 @@ class Analyse:
             return {
                 'type': 'text',
                 'length': len(data),
-                'lines': data.count('\n') + 1
+                'lines': int(data.count('\n') + 1)
             }
         else:
             raise TypeError("Type de données non supporté pour le résumé.")

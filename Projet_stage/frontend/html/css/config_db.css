@@ -1,0 +1,413 @@
+/* POPPINS FONT */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --primary-color: rgb(21, 151, 225);
+    --width-dashboard: calc(100% / 5);
+    --width-dashboard-reduit: calc(100% / 30);
+    --tw-bg-opacity: 1;
+    --my_background_color: rgb(31 41 55/var(--tw-bg-opacity));
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-weight: 200;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--my_background_color);
+}
+
+main {
+    position: relative;
+    min-width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--my_background_color);
+}
+
+button {
+    border: none;
+}
+
+
+form {
+    position: absolute;
+    top: 0;
+    width: 850px;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid white; */
+}
+
+strong {
+    color: red;
+}
+
+strong:hover{
+    content: "Veuillez remplire les champs en astérisque.";
+    width: 150px;
+    height: 10px;
+}
+
+/* ------------- Les changements de slides CSS -------------*/
+
+
+.move-box {
+    position: absolute;
+    bottom: 15px;
+    padding: 0 10px;
+    height: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mySlides {
+    display:none
+}
+
+.left,
+.right {
+    color: #fff;
+}
+
+.left,
+.right,
+.cercle {
+    cursor:pointer;
+}
+
+.cercle {
+    height:10px;
+    width:10px;
+    padding:0;
+    border-radius: 50%;
+    border: .5px solid #fff;
+    background-color: transparent;
+}
+
+.cercle:hover {
+    background-color: #fff;
+}
+
+.left:hover,
+.right:hover {
+    opacity: .7;
+}
+
+.fond-blanc{
+    background-color: #fff;
+}
+
+/* ------------- Les modales CSS ---------------- */
+
+.modal,
+.model {
+    position: absolute;
+    min-width: 600px;
+    min-height: 300px;
+    display: flex;
+    /* display: none; */
+    color: #fff;
+    font-size: larger;
+    align-self: center;
+    border: 1px solid #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
+}
+
+.model {
+    display: none;
+}
+.base-de-donnees {
+    position: absolute;
+    min-width: 600px;
+    min-height: 300px;
+    /* display: flex; */
+    display: none;
+    color: #fff;
+    font-size: larger;
+    align-self: center;
+    border: 1px solid #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
+}
+
+/* ------------------------------------------- */
+
+.msg,
+.base-de-donnees>span {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    font-size: 22px;
+    align-items: center;
+    justify-content: center;
+}
+
+.base-de-donnees>span {
+    text-align: center
+}
+
+.local-ou-distant {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#localeDisque {
+    display: none;
+}
+
+#local,
+#distant,
+#dataBase,
+.localeDisque,
+.des-db > span {
+    width: 190px;
+    padding: 10px;
+    display: flex;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+    background-color: var(--primary-color);
+    transition: scale 99ms;
+}
+
+#local:hover,
+#distant:hover,
+#dataBase:hover,
+.localeDisque:hover,
+.des-db > span:hover {
+    cursor: pointer;
+    opacity: .8;
+    scale: .98;
+}
+
+.base-de-donnees>div {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* border: solid #fff; */
+}
+
+.des-db > span {
+    width: 150px;
+}
+
+.des-db > span:first-child {
+    justify-content: space-between;
+}
+
+.des-db > span:nth-child(2) > i {
+    margin-right: 5px;
+}
+
+.header-config {
+    position: absolute;
+    width: 200px;
+    height: 100%;
+    top: 0;
+    display: flex;
+    color: black;
+    justify-self: center;
+    justify-content: center;
+    border-radius: 0 0 20px 20px;
+    background-color: aqua;
+}
+
+.header-config > span {
+    font-weight: 500;
+    font-size: x-large;
+    align-self: center;
+}
+
+.header-config::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-right-radius: 50%;
+    background-color: transparent;
+    box-shadow: 15px 0 0 0 aqua;
+}
+
+.header-config::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    background-color: transparent;
+    box-shadow: -15px 0 0 0 aqua;
+}
+
+/*---------- Configuration PostgreSQL ------------ */
+
+.configuration{
+    position: absolute;
+    top: 2%;
+    min-width: 800px;
+    min-height: 500px;
+    /* display: flex; */
+    justify-content: center;
+    display: none;
+    color: #fff;
+    font-size: larger;
+    border: 1px solid #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
+}
+
+.vide {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+}
+
+.article-1 {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    height: 345px;
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    border-radius: 15px;
+    /* border: 2px solid #f7f5f5c9; */
+}
+
+.box {
+    position: relative;
+    display: flex;
+    width: 240px;
+    flex-direction: column;
+    margin: 10px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.box>input {
+    width: 100%;
+    height: 55px;
+    font-size: 16px;
+    /* background-color: #ffffff00; */
+    background-color: var(--my_background_color);
+    border: 1px solid;
+    color: white;
+    padding-inline: 20px 50px;
+    border-radius: 30px;
+    outline: none;
+}
+
+.label {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    transition: all .2s;
+}
+
+.box > input:focus,
+.box > input:hover {
+    border: 2px solid #fff;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
+}
+
+.box > input:valid ~ .label,
+.box > input:focus ~ .label {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    color: black;
+    padding: 0 10px;
+    font-size: 14px;
+    border-radius: 30px;
+    background-color: whitesmoke
+}
+
+.box > input:-webkit-autofill,
+.box > input:-webkit-autofill:hover,
+.box > input:-webkit-autofill:focus {
+    border: 1px solid #fff;
+    border-radius: 30px;
+    caret-color: white;
+    color: white;
+    background-color: var(--my_background_color) !important;
+    -webkit-text-fill-color: white;
+    -webkit-background-clip: text;
+    box-shadow: 0 0 15px 0 var(--my_background_color) inset;
+}
+/* ------------------------------------------- */
+
+/* ----- Submition or reset button box ----- */
+
+.submit-reset-btn {
+    position: absolute;
+    bottom: 10px;
+    width: 500px;
+    height: 60px;
+    /* border: solid #fff; */
+    /* display: flex; */
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+}
+
+[type="submit"],
+[type="reset"] {
+    width: 190px;
+    padding: 13px;
+    display: flex;
+    border: none;
+    color: white;
+    font-weight: 400;
+    font-size: larger;
+    border-radius: 10px;
+    align-items: center;
+    transition: scale 99ms;
+    justify-content: center;
+    background-color: var(--primary-color);
+}
+
+[type="submit"]:hover,
+[type="reset"]:hover {
+    cursor: pointer;
+    opacity: .8;
+    scale: .98;
+}
+/* ------------------------------------------ */
+
+.modal-of{
+    display: none;
+}

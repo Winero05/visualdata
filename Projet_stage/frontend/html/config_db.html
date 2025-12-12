@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>configuratoin d'une base de données</title>
+    <link rel="stylesheet" href="css/config_db.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Lineicon CSS -->
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <main>
+        <form action="index.html" class="form">
+            <!-- Data slot box -->
+            <div class="modal of storage data mySlides">
+                <div class="msg">
+                    <span>Où récupérées les données ?</span>
+                </div>
+                <div class="local-ou-distant">
+                    <div id="local">Local</div>
+                    <div id="distant">Distant</div>
+                </div>
+            </div>
+            <div class="model of storage data mySlides">
+                <div class="msg">
+                    <span>Dans une base de données ou un disque locale ?</span>
+                </div>
+                <div class="local-ou-distant">
+                    <div id="dataBase">Base de données</div>
+                    <label for="loacleDisque" class="localeDisque">
+                        Disque locale
+                        <input type="file" name="choisir un fichier" id="localeDisque">
+                    </label>
+                    <!-- <input id="localeDisque">Disque locale</input> -->
+                </div>
+            </div>
+            <!-- Choice between DB box -->
+            <div class="boite de choix de base-de-donnees mySlides">
+                <span>Choisissez la base de données contenant les données</span>
+                <div class="boite des-db">
+                    <span>
+                        <i class='bx bxl-postgresql'></i>
+                        PostgreSQL
+                    </span>
+                    <span>
+                        <i class="lni lni-mysql"></i>
+                        MySQL
+                    </span>
+                    <span>SQLite</span>
+                </div>
+            </div>
+            <!-- Config of DB box -->
+            <div class="boite de configuration mySlides">
+                <div class="boite vide">
+                    <div class="header-config">
+                        <span>Configuration</span>
+                    </div>
+                </div>
+                <article class="article-1">
+                    <div class="box connectname">
+                        <input type="text" name="connectname" id="connectname" autofocus required>
+                        <label class="label" for="connectname">Nom connection <strong>*</strong></label>
+                    </div>
+                    <div class="box dbname">
+                        <input type="text" name="dbname" id="dbname" required>
+                        <label class="label" for="dbname">Base de données <strong>*</strong></label>
+                    </div>
+                    <div class="box user">
+                        <input type="text" name="user" id="user" required>
+                        <label class="label" for="user">Utilisateur <strong>*</strong></label>
+                    </div>
+                    <div class="box schemas">
+                        <input type="text" name="schemas" id="schemas" required>
+                        <label class="label" for="schemas">Schema <strong>*</strong></label>
+                    </div>
+                    <div class="box host">
+                        <input type="text" name="host" id="host" required>
+                        <label class="label" for="host">Serveur <strong>*</strong></label>
+                    </div>
+                    <div class="box port">
+                        <input type="tel" name="port" id="port" required>
+                        <label class="label" for="port">Port <strong>*</strong></label>
+                    </div>
+                    <div class="box password">
+                        <input type="password" name="password" id="password" autocomplete="off" required>
+                        <label class="label" for="password">Mot de passe <strong>*</strong></label>
+                    </div>
+                </article>
+                <div class="submit-reset-btn">
+                    <div class="submit-btn">
+                        <input type="submit" value="Enrégistrer">
+                    </div>
+                    <div class="reset-btn">
+                        <input type="reset" value="Annuler">
+                    </div>
+                </div>
+            </div>
+            <div class="move-box">
+                <div class="left">&#10094;</div>
+                <span class="cercle fond-blanc" title="Où récupérer les données ?"></span>
+                <span class="cercle" title="Dans une base de données ou un disque dur local ?"></span>
+                <span class="cercle" title="Choisisser une base de données entre PostgreSQL, MySQL et SQLite."></span>
+                <span class="cercle" title="Faite la configuration à la base de données choisi."></span>
+                <div class="right">&#10095;</div>
+            </div>
+        </form>
+    </main>
+    <script type="module" src="js/config_db.js"></script>
+</body>
+</html>

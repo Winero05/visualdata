@@ -9,7 +9,16 @@ __pycache__
 env
 img
 key
+NOTE.md
+mypy copy.ini
 mypy.ini
+constraints.txt
+constraints-dev.txt
+requirements.in
+requirements.txt
+requirements-dev.in
+requirements-dev.txt
+
 # **/*.ini
 
 # À ignorer dans le dossier `Projet_stage`
@@ -22,7 +31,10 @@ Projet_stage/.pytest_cache
 # À ignorer dans le dossier `Projet_stage/backend`
 Projet_stage/backend/__pycache__
 Projet_stage/backend/script
-Projet_stage\backend\script
+Projet_stage/backend/dependencies.py
+Projet_stage/backend/internal/admin.py
+Projet_stage/backend/routers/users.py
+Projet_stage/frontend/html/exit.html
 
 # À ignorer dans le dossier `Projet_stage/backend/routers`
 Projet_stage/backend/routers:/*__.py
@@ -46,3 +58,7 @@ Projet_stage/backend/tests/api
 
 # Ignorer tout ce qui est cache
 /__pycache__/
+/Projet_stage/backend/tests
+/Projet_stage/backend/resources
+Projet_stage/frontend/html/admin.html
+Projet_stage/frontend/html/js/user_action.js

@@ -1,0 +1,50 @@
+name: Python CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install pip-tools
+      run: pip install pip-tools
+
+    - name: Compile requirements
+      run: |
+        pip-compile requirements.in ^
+          -c constraints.txt ^
+          --output-file requirements.txt
+
+    - name: Check requirements.txt unchanged
+      run: git diff --exit-code requirements.txt
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Import check (sanity)
+      run: |
+        python -c "import sklearn, umap, pandas, fastapi, PIL; print('OK')"
+
+name: Ruff
+
+on: [ push, pull_request ]
+
+jobs:
+    ruff:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: astral-sh/ruff-action@v3

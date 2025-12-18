@@ -68,9 +68,11 @@ class Analyse:
             return {
                 'shape': data.shape,
                 'columns': list(data.columns),
-                'types': data.dtypes.astype(str).to_dict(),
+                'duplicates': int(data.duplicated().sum()),
                 'missing_values': data.isnull().sum().to_dict(),
-                'duplicates': int(data.duplicated().sum())
+                'types': data.dtypes.astype(str).to_dict(),
+                # 'infos': data.info(),
+                'num_col': list(data.select_dtypes(include='number').columns),
             }
         elif isinstance(data, np.ndarray):
             return {

@@ -62,7 +62,8 @@ a:hover {
     flex-wrap: wrap;
     border-radius: 15px;
     border: 1px solid #f7f5f5c9;
-    box-shadow: 0 0 15px 0 rgb(124, 158, 214);}
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
+}
 
 .form_container:first-child,
 .form_container> button {
@@ -137,7 +138,7 @@ button {
 
 .box > input:hover,
 .box > input:focus {
-    border: 2px solid;
+    border: 1.4px solid;
     box-shadow: 0 0 15px 0 rgb(124, 158, 214);
 }
 

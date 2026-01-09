@@ -43,7 +43,7 @@
         </nav>
     </header>
     <main id="main_index_html">
-        <div id="dashboard">
+        <aside id="dashboard">
             <div id="open_dashboard_contener">
                 <div class="barret"></div>
                 <div class="barret"></div>
@@ -54,7 +54,7 @@
                     <span>Choisir un fichier</span>
                 </button>
                 <div class="box_modal">
-                    <form class="myPopUp" method="get" name="form">
+                    <form class="myPopUp" method="post" name="form">
                         <div class="close-modal-box">
                             <div class="closePopUp">
                                 <i class="material-icons">&#xe5cd;</i>
@@ -67,7 +67,7 @@
                             id="url_or_filePath"
                             placeholder="https://url_des_donnees ou bien C:/..."
                             name="Reçevoir une URL ou un chemin du discque local."
-                            autofocus>
+                            autofocus required>
                         </div>
                         <div class="submition-btn">
                             <input type="submit" class="btn_url_or_filePath" value="Envoyer">
@@ -76,7 +76,7 @@
                     </form>
                 </div>
             </div>
-            <select name="type_de_visualisation" id="type_de_visualisation">
+            <select name="type_de_visualisation" id="type_de_visualisation" disabled>
                 <option value="">
                     <span>Visualisation</span>
                 </option>
@@ -89,7 +89,7 @@
                 <option value="all">Tous</option>
             </select>
             <div class="visualisation-box-modal">
-                <form class="form-visualisation" method="get" name="form">
+                <form class="form-visualisation" method="post" name="form">
                     <div class="close-modal-box">
                         <div class="visuale-closePopUp">
                             <i class="material-icons">&#xe5cd;</i>
@@ -98,11 +98,13 @@
                     <div class="label-and-data-path-input">
                         <label for="filePath">Où stocker les figures graphiques ?</label>
                         <input
+                        title="Reçevoir le chemin d'un repertoire de stockage."
                         type="text"
                         id="filePath"
                         placeholder="C:/..."
                         name="Reçevoir un chemin du discque local."
-                        autofocus>
+                        autofocus
+                        required>
                     </div>
                     <div class="submition-btn">
                         <input type="submit" class="btn_url_or_filePath" value="Envoyer">
@@ -129,12 +131,20 @@
                         Valeur dupliqué
                         <span></span>
                     </li>
-                    <li class="items-3">
+                    <li class="items-4">
                         Valeur manquante
                         <span></span>
                     </li>
-                    <li class="items-4">
+                    <li class="items-5">
                         Types des colonne
+                        <span></span>
+                    </li>
+                    <li class="items-6">
+                        Colonnes numérique
+                        <span></span>
+                    </li>
+                    <li class="items-7">
+                        Toutes
                         <span></span>
                     </li>
                 </ul>
@@ -146,16 +156,15 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </aside>
+        <div class="resize-dashboard"></div>
         <div id="contener">
             <div id="plot">
                 <div class="charge-data-message">
                     <span>Veuillez charger un fichier</span>
                 </div>
-                <!-- <div class="loading_data_icon">
-                    <img src="img/importation_de_fichier.png" alt="importation_de_fichier" class="icon_importation_de_fichier">
-                </div> -->
                 <div class="iframe_contener">
+                    <iframe src="" frameborder="0"></iframe>
                     <!-- <iframe
                     src="http://127.0.0.1:5501/Projet_stage/backend/tests/output/html/3D/Reduction_ACP_3D.html"
                     name="zone d'affichage des vue graphiques." frameborder="0"
@@ -164,13 +173,15 @@
                     ></iframe> -->
                 </div>
             </div>
+            <div class="resize-plot"></div>
             <div class="resumer_des_donnees">
-                <div class="all-infos-on-data"></div>-data
-                <div class="single-info-on-data"></div>-data
+                <form class="numerique_col"></form>
+                <div class="all-infos-on-data"></div>
+                <div class="single-info-on-data"></div>
             </div>
         </div>
     </main>
     <footer></footer>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

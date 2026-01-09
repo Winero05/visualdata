@@ -10,6 +10,7 @@ env
 img
 key
 NOTE.md
+noteAndTest.ipynb
 mypy copy.ini
 mypy.ini
 constraints.txt
@@ -23,13 +24,13 @@ requirements-dev.txt
 
 # À ignorer dans le dossier `Projet_stage`
 Projet_stage/__pycache__
-Projet_stage/.github
 Projet_stage/.pytest_cache
 **/.pytest_cache
 # Projet_stage/pytest.ini
 
 # À ignorer dans le dossier `Projet_stage/backend`
 Projet_stage/backend/__pycache__
+Projet_stage/backend/.github
 Projet_stage/backend/script
 Projet_stage/backend/dependencies.py
 Projet_stage/backend/internal/admin.py

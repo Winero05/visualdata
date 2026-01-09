@@ -16,18 +16,32 @@
                 <span>Se connecter</span>
             </div>
             <div class="email box">
-                <input type="email" name="user_email" id="email" autocomplete="email" required>
+                <input
+                id="email"
+                type="email"
+                name="user_email"
+                autocomplete="on"
+                required>
                 <label for="email" class="label">Email</label>
                 <i class="bx bx-envelope icon"></i>
             </div>
             <div class="password box">
-                <input type="password" name="user password" id="password" required>
+                <input
+                id="password"
+                type="password"
+                name="user password"
+                autocomplete="off"
+                required>
                 <label for="password" class="label">Mot de passe</label>
                 <i class="bx bx-lock-alt icon"></i>
             </div>
             <div class="remember-forgot box">
                 <div class="remember-me">
-                    <input type="checkbox" name="Remeber user" id="remember-me">
+                    <input 
+                    id="remember-me"
+                    type="checkbox"
+                    name="Remeber user"
+                    autocomplete="off">
                     <label for="remember-me">Se souvenir de moi.</label>
                 </div>
                 <div class="forgot-password">
@@ -42,5 +56,6 @@
             </div>
         </form>
     </main>
+    <script type="module" src="js/login.js"></script>
 </body>
 </html>

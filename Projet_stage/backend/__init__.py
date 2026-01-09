@@ -8,7 +8,7 @@ __all__ = [
 	'DataLoader',
 	'CleanDataframeForJson',
 	'SaveInDataBase',
-	'ConfigDb',
+	'DbConfigRegistry',
 	'Analyse',
 	'Nettoyage',
 	'NumericData',
@@ -17,8 +17,8 @@ __all__ = [
 	'MethodeTSNE',
 	'MethodeUMAP',
 	'AutoSelector',
-	'Visualisation_2D',
-	'Visualisation_3D'
+	'Visualisation2D',
+	'Visualisation3D'
 ]
 
 # Les modules/classes devant intervenir dans l'API
@@ -28,7 +28,6 @@ from modules.save_in_db import SaveInDataBase
 # Les modules/classes qui le bon fonctionnement des autres modules/classes.
 from modules.string_tool import StringTools
 from modules.clean_dataframe_for_json import CleanDataframeForJson
-from cfg.config_db import ConfigDb
 from modules.analysis import Analyse
 from modules.nettoyage import  Nettoyage
 from modules.numeric_data import NumericData
@@ -37,7 +36,8 @@ from modules.methode_acp import  MethodeACP
 from modules.methode_tsne import  MethodeTSNE
 from modules.methode_umap import  MethodeUMAP
 from modules.auto_selector import  AutoSelector
-from modules.visualisation_2D import Visualisation_2D
-from modules.visualisation_3D import Visualisation_3D
+from modules.visualisation_2d import Visualisation2D
+from modules.visualisation_3d import Visualisation3D
+from cfg.config_db import DbConfigRegistry
 
 __version__ = "0.0.1"

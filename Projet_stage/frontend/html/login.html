@@ -11,7 +11,10 @@
 </head>
 <body>
     <main class="login_main">
-        <form class="form_container" action="config_db.html">
+        <form
+        method="post"
+        class="form_container"
+        action="config_db.html">
             <div class="login">
                 <span>Se connecter</span>
             </div>
@@ -21,6 +24,7 @@
                 type="email"
                 name="user_email"
                 autocomplete="on"
+                autofocus
                 required>
                 <label for="email" class="label">Email</label>
                 <i class="bx bx-envelope icon"></i>

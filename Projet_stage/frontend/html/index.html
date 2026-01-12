@@ -25,26 +25,27 @@
             <h1>Outil de visualisation de données</h1>
             <div class="compte-box">
                 <!-- thin style -->
-                <i class="fa-thin fa-user"></i>
+                <!-- <i class="fa-thin fa-user"></i> -->
                 <!-- <i class="fa-regular fa-user"></i> -->
                 <!-- <i style='font-size:24px' class='fas'>&#xf2bd;</i> -->
                 <!-- <i class="lni lni-user-4"></i> -->
-                <!-- <ul class="compte-info">
+                <ul class="compte-info">
                     <li class="items">Profile</li>
-                    <li class="items">Paramètres</li>
                     <li class="items">Thème</li>
+                    <li class="items">Langue</li>
                     <li class="items">Historique</li>
+                    <li class="items">Paramètres</li>
                     <li class="items">Notifications</li>
                     <li class="items">Documentation</li>
                     <li class="items">Se déconnecter</li>
                     <li class="items">Quitter</li>
-                </ul> -->
+                </ul>
             </div>
         </nav>
     </header>
     <main id="main_index_html">
         <aside id="dashboard">
-            <div id="open_dashboard_contener">
+            <div id="open_dashboard_contener" class="open_dashboard">
                 <div class="barret"></div>
                 <div class="barret"></div>
                 <div class="barret"></div>
@@ -70,8 +71,8 @@
                             autofocus required>
                         </div>
                         <div class="submition-btn">
-                            <input type="submit" class="btn_url_or_filePath" value="Envoyer">
                             <input type="reset" value="Annuler">
+                            <input type="submit" class="btn_url_or_filePath" value="Envoyer">
                         </div>
                     </form>
                 </div>
@@ -107,8 +108,8 @@
                         required>
                     </div>
                     <div class="submition-btn">
-                        <input type="submit" class="btn_url_or_filePath" value="Envoyer">
                         <input type="reset" value="Annuler">
+                        <input type="submit" class="btn_url_or_filePath" value="Envoyer">
                     </div>
                 </form>
             </div>
@@ -181,7 +182,6 @@
             </div>
         </div>
     </main>
-    <footer></footer>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

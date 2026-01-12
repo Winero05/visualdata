@@ -13,7 +13,10 @@
 </head>
 <body>
     <main>
-        <form action="index.html" class="form">
+        <form
+        method="post"
+        class="form"
+        action="index.html">
             <!-- Data slot box -->
             <div class="modal of storage data mySlides">
                 <div class="msg">
@@ -32,7 +35,14 @@
                     <div id="dataBase">Base de données</div>
                     <label for="loacleDisque" class="localeDisque">
                         Disque locale
-                        <input type="file" name="choisir un fichier" id="localeDisque">
+                        <input
+                        id="localeDisque"
+                        type="file"
+                        title="choisir un fichier"
+                        name="choisir un fichier"
+                        autocomplete="on"
+                        autofocus
+                        required>
                     </label>
                     <!-- <input id="localeDisque">Disque locale</input> -->
                 </div>

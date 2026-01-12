@@ -53,6 +53,48 @@ a:hover {
     opacity: .8;
 }
 
+#loader-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-l {
+    /* position: fixed; */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+    color: white;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(0,0,0,.35);
+}
+
+.spinner {
+    border: 2px solid rgba(104, 18, 222, 2);
+    border-top-color: 5px rgb(31 41 55/var(--tw-bg-opacity)) solid;
+    width: 50px;
+    height: 50px;
+    margin: 50px;
+    border-radius: 50%;
+    animation-name: spinner;
+    animation-duration: .8s;
+    animation-delay: .1ms;
+    animation-iteration-count: infinite;
+}
+@keyframes spinner {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .form_container {
     position: relative;
     width: 500px;
@@ -62,7 +104,8 @@ a:hover {
     align-items: center;
     flex-wrap: wrap;
     border-radius: 15px;
-    border: 2px solid #f7f5f5c9;
+    border: 1px solid #f7f5f5c9;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
 }
 
 .form_container:first-child,
@@ -126,12 +169,18 @@ button {
     height: 55px;
     font-size: 16px;
     background-color: #ffffff00;
-    border: 2px solid;
+    border: 1px solid;
     color: white;
     padding-inline: 20px 50px;
     border-radius: 30px;
     outline: none;
 
+}
+
+.box > input:hover,
+.box > input:focus {
+    border: 1.4px solid;
+    box-shadow: 0 0 15px 0 rgb(124, 158, 214);
 }
 
 .box > label {

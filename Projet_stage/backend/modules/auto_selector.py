@@ -4,7 +4,10 @@ selon la nature et la structure du jeu de données.
 """
 
 import warnings
-from typing import Union
+from typing import (
+    Any,
+    Union,
+    Literal,)
 from pydantic import ConfigDict
 from pydantic.dataclasses import dataclass
 import pandas as pd
@@ -77,7 +80,7 @@ class AutoSelector:
         corr = np.corrcoef(dist_orig.flatten(), dist_proj.flatten())[0, 1]
         return corr
 
-    def detecter_methode(self) -> str:
+    def detecter_methode(self) -> Literal['acp', 'tsne', 'umap']:
         """
         Détermine automatiquement la meilleure méthode selon :
             - le nombre de colonnes
@@ -99,6 +102,7 @@ class AutoSelector:
         print(f"\nScore de linéarité moyenne : {score_linearite:.3f}\n")
 
         # Étape 1 — Choix initial heuristique
+        methode: Literal['acp', 'tsne', 'umap']
         if p <= 20 and score_linearite > 0.6:
             methode = "acp"
         elif (20 < p <= 100 and 0.3 <= score_linearite <= 0.6) or n < 10000:
@@ -109,29 +113,29 @@ class AutoSelector:
         print(f"\nMéthode initialement pressentie : {methode.upper()}\n")
 
         # Étape 2 — Validation par score de qualité structurelle (test rapide)
-        resultats = {}
-        try:
-            # ACP
-            x_acp = MethodeACP(df_num).acp_reduction(nombre_dimenssion=self.nombre_de_dimension)
-            resultats["acp"] = self._score_structure(x_acp, _x)
+        # resultats: dict[str, Any] = {}
+        # try:
+        #     # ACP
+        #     x_acp = MethodeACP(df_num).acp_reduction(nombre_dimenssion=self.nombre_de_dimension)
+        #     resultats["acp"] = self._score_structure(x_acp, _x)
 
-            # t-SNE (échantillon plus petit si dataset volumineux)
-            x_small = _x[: min(700, len(_x))]
-            x_tsne = MethodeTSNE(
-                df=pd.DataFrame(x_small)).tsne_reduction(
-                    nombre_de_dimension=self.nombre_de_dimension)
-            resultats["tsne"] = self._score_structure(x_tsne, x_small)
+        #     # t-SNE (échantillon plus petit si dataset volumineux)
+        #     x_small = _x[: min(700, len(_x))]
+        #     x_tsne = MethodeTSNE(
+        #         df=pd.DataFrame(x_small)).tsne_reduction(
+        #             nombre_de_dimension=self.nombre_de_dimension)
+        #     resultats["tsne"] = self._score_structure(x_tsne, x_small)
 
-            # UMAP
-            x_umap = MethodeUMAP(df_num).umap_reduction(nombre_de_dimension=2)
-            resultats["umap"] = self._score_structure(x_umap, _x)
-        except ImportError as e:
-            print(f"\nErreur durant l’évaluation structurelle : {e}\n")
+        #     # UMAP
+        #     x_umap = MethodeUMAP(df_num).umap_reduction(nombre_de_dimension=2)
+        #     resultats["umap"] = self._score_structure(x_umap, _x)
+        # except ImportError as e:
+        #     print(f"\nErreur durant l’évaluation structurelle : {e}\n")
 
-        if resultats:
-            meilleure_methode = max(resultats, key=resultats.__getitem__)
-            print(f"\nScores structurels : {resultats}\n")
-            print(f"\nMéthode sélectionnée : {meilleure_methode.upper()}\n")
-            return meilleure_methode
+        # if resultats:
+        #     meilleure_methode = max(resultats, key=resultats.__getitem__)
+        #     print(f"\nScores structurels : {resultats}\n")
+        #     print(f"\nMéthode sélectionnée : {meilleure_methode.upper()}\n")
+        #     return meilleure_methode
 
         return methode
